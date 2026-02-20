@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gym Customer Churn · Suggestions</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+
+body{
+    background:#0b0e14;
+    display:flex;
+    min-height:100vh;
+    color:#e1e9f0;
+}
+
+/* === PRIMARY DRIVER STYLES === */
+
+.primary-critical {
+    background: linear-gradient(135deg, #2a0f14, #1a0b0e);
+    border-left: 6px solid #ef4444;
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.25);
+}
+
+.primary-warning {
+    background: linear-gradient(135deg, #2a1f0f, #1a140b);
+    border-left: 6px solid #f59e0b;
+    box-shadow: 0 0 25px rgba(245, 158, 11, 0.25);
+}
+
+.primary-moderate {
+    background: linear-gradient(135deg, #0f1f2a, #0b141a);
+    border-left: 6px solid #3b82f6;
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.25);
+}
+
+.primary-impact {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-top: 12px;
+}
+/* ===== SIDEBAR ===== */
+.sidebar{
+    width:260px;
+    background:#10141c;
+    border-right:1px solid #222a36;
+    padding:2rem 1.5rem;
+    display:flex;
+    flex-direction:column;
+}
+
+.logo-area{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:3rem;
+}
+
+.logo-area i{
+    font-size:1.6rem;
+    color:#3b82f6;
+}
+
+.logo-area span{
+    font-weight:600;
+    font-size:1rem;
+    line-height:1.3;
+}
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    flex:1;
+}
+
+.nav-item{
+    padding:12px 16px;
+    border-radius:14px;
+    font-weight:500;
+    color:#8e9aaf;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.nav-item:hover{
+    background:#1a212b;
+    color:#ccddf8;
+}
+
+.nav-item.active{
+    background:#1f2a37;
+    color:white;
+    border-left:3px solid #3b82f6;
+}
+
+.user-tag{
+    margin-top:auto;
+    border-top:1px solid #1f2937;
+    padding-top:1.5rem;
+    font-size:0.9rem;
+    color:#9ca9bc;
+}
+
+/* ===== MAIN ===== */
+.main{
+    flex:1;
+    padding:2.5rem;
+    overflow-y:auto;
+}
+
+.page-header h1{
+    font-size:2rem;
+    font-weight:600;
+    margin-bottom:8px;
+}
+
+.page-header p{
+    color:#6f7d98;
+}
+
+/* ===== STATS GRID ===== */
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+    margin:30px 0;
+}
+
+.stat-card{
+    background:#131823;
+    border:1px solid #263040;
+    border-radius:24px;
+    padding:1.5rem;
+    transition:0.2s;
+}
+
+.stat-card:hover{
+    transform:translateY(-4px);
+    border-color:#3b82f6;
+}
+
+.stat-title{
+    font-size:0.8rem;
+    color:#8b9bb5;
+    text-transform:uppercase;
+    margin-bottom:8px;
+}
+
+.stat-value{
+    font-size:1.8rem;
+    font-weight:700;
+}
+
+.stat-trend{
+    font-size:0.9rem;
+    margin-top:4px;
+}
+
+.stat-trend.down{ color:#f87171; }
+.stat-trend:not(.down){ color:#4ade80; }
+
+
+
+
+/* ===== SECTION ===== */
+.insight-section{
+    background:#131823;
+    border:1px solid #263040;
+    border-radius:28px;
+    padding:2rem;
+    margin-bottom:30px;
+}
+
+.section-title{
+    font-size:1.4rem;
+    margin-bottom:20px;
+}
+
+
+/* ===== SUGGESTIONS GRID ===== */
+.suggestions-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:25px;
+}
+
+.suggestion-card{
+    background:#0f172a;
+    border-radius:24px;
+    padding:1.5rem;
+    border:1px solid #263040;
+    transition:0.3s;
+}
+
+.suggestion-card:hover{
+    border-color:#3b82f6;
+    box-shadow:0 15px 30px -10px #1e3a8a40;
+}
+
+.suggestion-title{
+    font-size:1.1rem;
+    font-weight:600;
+    margin-bottom:10px;
+}
+
+.suggestion-desc{
+    color:#9ca9bc;
+    line-height:1.6;
+}
+
+.impact-preview {
+    background: linear-gradient(145deg, #0f172a, #131c2b);
+    border-radius: 28px;
+    padding: 2.2rem;
+    border: 1px solid #263040;
+    margin-top: 30px;
+}
+
+.impact-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.impact-header h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.impact-header span {
+    color: #8b9bb5;
+    font-size: 0.9rem;
+}
+
+.impact-slider {
+    margin-bottom: 30px;
+}
+
+.impact-slider label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.impact-slider input {
+    width: 100%;
+}
+
+.impact-metrics {
+    border-top: 1px solid #1f2937;
+}
+
+.impact-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 0;
+    border-bottom: 1px solid #1f2937;
+}
+
+.impact-row:last-child {
+    border-bottom: none;
+}
+
+.impact-label {
+    font-size: 1.05rem;
+    color: #b9c9e0;
+}
+
+.impact-values {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.metric-current {
+    color: #ef4444;
+}
+
+.metric-after {
+    color: #22c55e;
+}
+
+.arrow {
+    color: #3b82f6;
+    margin: 0 12px;
+}
+
+/* ===== FOOTER ===== */
+.footer-note{
+    margin-top:40px;
+    padding-top:20px;
+    border-top:1px solid #1b2330;
+    color:#4c5b73;
+    font-size:0.9rem;
+}
+
+.timeline {
+    margin-top: 20px;
+}
+
+.timeline-item {
+    display: flex;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid #263040;
+}
+
+.timeline-item:last-child {
+    border-bottom: none;
+}
+
+.timeline-priority {
+    min-width: 160px;
+    font-weight: 600;
+    color: #3b82f6;
+}
+
+.timeline-content h4 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: white;
+}
+
+.timeline-content p {
+    color: #9ca9bc;
+    line-height: 1.6;
+    margin-bottom: 6px;
+}
+</style>
+</head>
+
+<body>
+
+    
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="logo-area">
+        <i class="fas fa-dumbbell"></i>
+        <span>
+            Gym Customer<br>
+            Churn Prediction
+        </span>
+    </div>
+
+    <div class="nav">
+        <div class="nav-item" onclick="window.location.href='/dashboard'">📊 Overview</div>
+        <div class="nav-item" onclick="window.location.href='/prediction'">🔮 Prediction</div>
+        <div class="nav-item active">💡 Suggestions</div>
+    </div>
+
+    <div class="user-tag">
+        churn guard v1.0
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<div class="page-header">
+    <h1>💡 Gym Improvement Recommendations</h1>
+    <p>Actionable strategies to improve retention based on ML insights</p>
+</div>
+
+<!-- STATS -->
+<div class="stats-grid">
+
+    <div class="stat-card">
+        <div class="stat-title">Current Churn Rate</div>
+        <div class="stat-value" id="churnRate">-</div>
+        <div class="stat-trend down">Live model data</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-title">At-Risk Members</div>
+        <div class="stat-value" id="atRisk">-</div>
+        <div class="stat-trend">Live model data</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-title">Avg Member Lifetime</div>
+        <div class="stat-value" id="avgLifetime">-</div>
+        <div class="stat-trend down">Based on subscription length</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-title">Retention Rate</div>
+        <div class="stat-value" id="retentionRate">-</div>
+        <div class="stat-trend">Live calculation</div>
+    </div>
+
+</div>
+
+
+<script>
+async function loadSuggestionMetrics(){
+    try{
+        const res = await fetch('/api/suggestions-metrics');
+        const data = await res.json();
+
+        document.getElementById('churnRate').innerText = data.actual_churn_rate + "%";
+        document.getElementById('atRisk').innerText = data.at_risk_members;
+        document.getElementById('avgLifetime').innerText = data.avg_lifetime + " mo";
+        document.getElementById('retentionRate').innerText = data.retention_rate + "%";
+
+    }catch(error){
+        console.error("Error loading metrics:", error);
+    }
+}
+
+loadSuggestionMetrics();
+setInterval(loadSuggestionMetrics, 30000);
+</script>
+
+<div class="insight-section">
+    <div class="section-title">
+        🔥 Primary Churn Driver
+        <span>Live Model Insight</span>
+    </div>
+
+    <div id="primaryDriverCard" class="suggestion-card">
+        Loading model insight...
+    </div>
+</div>
+
+
+
+
+
+<!-- SUGGESTIONS -->
+<div class="insight-section">
+    <div class="section-title">Strategic Recommendations</div>
+
+    <div class="suggestions-grid">
+        <div class="suggestion-card">
+            <div class="suggestion-title">Re-engagement Program</div>
+            <div class="suggestion-desc">
+                Target low-visit members with personalized workout plans, SMS reminders, and free trainer sessions.
+            </div>
+        </div>
+
+        <div class="suggestion-card">
+            <div class="suggestion-title">Complaint Resolution System</div>
+            <div class="suggestion-desc">
+                24-hour complaint response policy with structured issue tracking and follow-up.
+            </div>
+        </div>
+
+        <div class="suggestion-card">
+            <div class="suggestion-title">Long-Term Membership Incentives</div>
+            <div class="suggestion-desc">
+                Offer discounts and loyalty rewards for 6/12 month commitments.
+            </div>
+        </div>
+
+        <div class="suggestion-card">
+            <div class="suggestion-title">Class Attendance Challenge</div>
+            <div class="suggestion-desc">
+                Run 6-week challenges with rewards to increase community engagement.
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="insight-section">
+    <div class="section-title">
+        📅 Execution Roadmap
+        
+    </div>
+
+    
+ <div class="timeline" id="roadmapContainer"></div>
+</div>
+
+<div class="impact-preview">
+    <div class="impact-header">
+        <h3>📊 Projected Business Impact</h3>
+        <span>ROI analysis · 12-month forecast</span>
+    </div>
+
+    <div class="impact-slider">
+        <label>
+            Retention Success Rate:
+            <span id="sliderValue">40%</span>
+        </label>
+        <input type="range"
+               id="retentionSlider"
+               min="0"
+               max="100"
+               value="40">
+    </div>
+
+    <div class="impact-metrics">
+
+        <div class="impact-row">
+            <span class="impact-label">Monthly churn rate</span>
+            <span class="impact-values">
+                <span id="currentChurn" class="metric-current"></span>
+                <span class="arrow">→</span>
+                <span id="projectedChurn" class="metric-after"></span>
+            </span>
+        </div>
+
+        <div class="impact-row">
+            <span class="impact-label">Revenue retained</span>
+            <span class="impact-values">
+                <span id="revenueSaved" class="metric-after"></span>
+            </span>
+        </div>
+
+        <div class="impact-row">
+            <span class="impact-label">High-risk members saved</span>
+            <span class="impact-values">
+                <span id="membersSaved" class="metric-after"></span>
+            </span>
+        </div>
+
+        <div class="impact-row">
+            <span class="impact-label">Class attendance rate</span>
+            <span class="impact-values">
+                <span id="currentAttendance" class="metric-current"></span>
+                <span class="arrow">→</span>
+                <span id="projectedAttendance" class="metric-after"></span>
+            </span>
+        </div>
+
+        <div class="impact-row">
+            <span class="impact-label">Annual membership ratio</span>
+            <span class="impact-values">
+                <span id="currentAnnual" class="metric-current"></span>
+                <span class="arrow">→</span>
+                <span id="projectedAnnual" class="metric-after"></span>
+            </span>
+        </div>
+
+        <div class="impact-row">
+            <span class="impact-label">Average complaints per member</span>
+            <span class="impact-values">
+                <span id="currentComplaints" class="metric-current"></span>
+                <span class="arrow">→</span>
+                <span id="projectedComplaints" class="metric-after"></span>
+            </span>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+<div class="footer-note">
+    ⚡ Recommendations powered by churn prediction model insights
+</div>
+<div class="suggestion-title" style="font-size:1.3rem;"></div>
+
+<script>
+async function loadPrimaryDriver(){
+    try{
+        const res = await fetch('/api/churn-factors');
+        const data = await res.json();
+
+        // Sort by importance
+        data.sort((a,b)=> b.importance - a.importance);
+        const top = data[0];
+
+        const importancePercent = (top.importance * 100).toFixed(1);
+
+        // Mapping model feature → business action
+        const strategyMap = {
+            "num_logins": {
+                title: "Re-Engagement Campaign",
+                reason: "Low gym visits are the strongest churn indicator.",
+                action: "Launch SMS reminders, free PT session offers, and 30-day visit challenges."
+            },
+            "num_complaints": {
+                title: "Complaint Resolution System",
+                reason: "Frequent complaints strongly correlate with churn.",
+                action: "Implement 24-hour resolution policy and follow-up calls."
+            },
+            "subscription_length": {
+                title: "Long-Term Membership Incentives",
+                reason: "Short subscriptions increase churn probability.",
+                action: "Offer discounts for 6/12-month plans and loyalty perks."
+            },
+            "num_classes_attended": {
+                title: "Class Engagement Boost",
+                reason: "Low class participation reduces member attachment.",
+                action: "Start class challenges and beginner-friendly programs."
+            },
+            "avg_session_time": {
+                title: "Workout Optimization Program",
+                reason: "Short sessions indicate lower engagement.",
+                action: "Provide structured 45-minute guided workout plans."
+            }
+        };
+
+        const strategy = strategyMap[top.feature] || {
+            title: "Targeted Retention Strategy",
+            reason: "This feature has the highest impact on churn.",
+            action: "Prioritize interventions related to this behavior."
+        };
+
+        const card = document.getElementById("primaryDriverCard");
+
+        card.innerHTML = `
+            <div class="suggestion-title" style="font-size:1.3rem;">
+                    Priority Intervention: ${strategy.title}
+            </div>
+            <div class="suggestion-desc">
+                <strong>Why?</strong> ${strategy.reason}
+            </div>
+            <div class="suggestion-desc" style="margin-top:8px;">
+                <strong>Recommended Action:</strong> ${strategy.action}
+            </div>
+            <div class="primary-impact" style="margin-top:12px;">
+                Model Impact Score: ${importancePercent}%
+            </div>
+        `;
+
+    }catch(error){
+        console.error("Primary Driver Error:", error);
+    }
+}
+
+loadPrimaryDriver();
+</script>
+<script>
+async function loadRoadmap(){
+    try{
+        const res = await fetch('/api/execution-roadmap');
+        const data = await res.json();
+
+        let html = "";
+
+        data.forEach(item => {
+            html += `
+    <div class="timeline-item">
+        <div class="timeline-priority">
+            ${item.phase}
+        </div>
+        <div class="timeline-content">
+            <h4>${item.title}</h4>
+            <p>
+                <strong>Why:</strong> ${item.reason}
+            </p>
+            <p>
+                <strong>Action:</strong> ${item.action}
+            </p>
+        </div>
+    </div>
+`;
+
+        });
+
+        document.getElementById("roadmapContainer").innerHTML = html;
+
+    }catch(error){
+        console.error("Roadmap Error:", error);
+    }
+}
+
+loadRoadmap();
+</script>
+<script>
+
+let baseData = null;
+
+async function loadBusinessImpact(){
+    try{
+        const res = await fetch('/api/business-impact');
+        baseData = await res.json();
+        updateSimulation(40);
+    }catch(error){
+        console.error("Business Impact Error:", error);
+    }
+}
+
+function updateSimulation(successRate){
+
+    if(!baseData) return;
+
+    const factor = successRate / 100;
+
+    const churn = baseData.current_churn_rate * 100;
+    const attendance = baseData.class_attendance_rate;
+    const annual = baseData.annual_membership_ratio;
+    const complaints = baseData.avg_complaints;
+
+    const highRisk = baseData.high_risk_members;
+    const avgValue = baseData.avg_member_value;
+
+    const projectedChurn = churn - (churn * factor * 0.7);
+    const projectedAttendance =
+        attendance + ((100 - attendance) * factor * 0.6);
+    const projectedAnnual =
+        annual + ((100 - annual) * factor * 0.5);
+    const projectedComplaints =
+        complaints - (complaints * factor * 0.8);
+
+    const savedMembers = highRisk * factor;
+    const revenueSaved = savedMembers * avgValue;
+
+    document.getElementById("currentChurn").innerText =
+        churn.toFixed(1) + "%";
+    document.getElementById("projectedChurn").innerText =
+        projectedChurn.toFixed(1) + "%";
+
+    document.getElementById("currentAttendance").innerText =
+        attendance.toFixed(1) + "%";
+    document.getElementById("projectedAttendance").innerText =
+        projectedAttendance.toFixed(1) + "%";
+
+    document.getElementById("currentAnnual").innerText =
+        annual.toFixed(1) + "%";
+    document.getElementById("projectedAnnual").innerText =
+        projectedAnnual.toFixed(1) + "%";
+
+    document.getElementById("currentComplaints").innerText =
+        complaints.toFixed(2);
+    document.getElementById("projectedComplaints").innerText =
+        projectedComplaints.toFixed(2);
+
+    document.getElementById("membersSaved").innerText =
+        Math.round(savedMembers);
+
+    document.getElementById("revenueSaved").innerText =
+        "$" + Math.round(revenueSaved).toLocaleString();
+}
+
+document.getElementById("retentionSlider")
+.addEventListener("input", function(){
+    const value = this.value;
+    document.getElementById("sliderValue").innerText = value + "%";
+    updateSimulation(value);
+});
+
+loadBusinessImpact();
+
+</script>
+
+</main>
+
+</body>
+</html>
+
