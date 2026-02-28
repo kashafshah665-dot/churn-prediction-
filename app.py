@@ -319,10 +319,18 @@ def business_impact():
         "avg_member_value": avg_member_value
     })
 
+    
+
+@app.route("/impact")
+def impact():
+    return render_template("impact.html")
+
+
 
 # =========================
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
 
