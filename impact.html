@@ -1,1139 +1,1073 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gym Customer Churn · Business Impact</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impact • GymFlow Enterprise</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #03050a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+        }
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-}
+        /* Cyber Grid Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
 
-body{
-    background:#0b0e14;
-    display:flex;
-    min-height:100vh;
-    color:#e1e9f0;
-}
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 50%, rgba(0, 255, 255, 0.05), transparent 50%);
+            z-index: -1;
+        }
 
-/* SIDEBAR */
-.sidebar{
-    width:260px;
-    background:#10141c;
-    border-right:1px solid #222a36;
-    padding:2rem 1.5rem;
-    display:flex;
-    flex-direction:column;
-}
+        /* Sidebar - Glass Dark */
+        .sidebar {
+            width: 300px;
+            background: rgba(5, 8, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(0, 255, 255, 0.1);
+            padding: 2.5rem 1.8rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 2;
+        }
 
-.logo-area{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-bottom:3rem;
-}
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.03), transparent);
+            pointer-events: none;
+        }
 
-.logo-area i{
-    font-size:1.6rem;
-    color:#3b82f6;
-}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
 
-.logo-area span{
-    font-weight:600;
-    font-size:1rem;
-    line-height:1.3;
-}
+        .logo-icon {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #03050a;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            animation: glowPulse 3s infinite;
+        }
 
-.nav{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    flex:1;
-}
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(0, 255, 255, 0.5); }
+            50% { box-shadow: 0 0 50px rgba(255, 0, 255, 0.5); }
+        }
 
-.nav-item{
-    padding:12px 16px;
-    border-radius:14px;
-    font-weight:500;
-    color:#8e9aaf;
-    cursor:pointer;
-    transition:0.2s;
-}
+        .logo-text h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            line-height: 1.3;
+            background: linear-gradient(135deg, #fff, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.3px;
+        }
 
-.nav-item:hover{
-    background:#1a212b;
-    color:#ccddf8;
-}
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1;
+        }
 
-.nav-item.active{
-    background:#1f2a37;
-    color:white;
-    border-left:3px solid #3b82f6;
-}
+        .nav-item {
+            padding: 1rem 1.2rem;
+            border-radius: 16px;
+            color: #9ca3af;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            font-weight: 500;
+        }
 
-.user-tag{
-    margin-top:auto;
-    border-top:1px solid #1f2937;
-    padding-top:1.5rem;
-    font-size:0.9rem;
-    color:#9ca9bc;
-}
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
 
-/* MAIN */
-.main{
-    flex:1;
-    padding:2.5rem;
-    overflow-y:auto;
-}
+        .nav-item:hover::before {
+            left: 100%;
+        }
 
-.page-header h1{
-    font-size:2rem;
-    font-weight:600;
-    margin-bottom:8px;
-}
+        .nav-item:hover {
+            color: #00ffff;
+            transform: translateX(5px);
+        }
 
-.page-header p{
-    color:#6f7d98;
-}
+        .nav-item.active {
+            background: rgba(0, 255, 255, 0.1);
+            color: #00ffff;
+            border-left: 3px solid #00ffff;
+        }
 
-/* IMPACT SECTION */
-.impact-preview {
-    background: linear-gradient(145deg, #0f172a, #131c2b);
-    border-radius: 28px;
-    padding: 2.2rem;
-    border: 1px solid #263040;
-    margin-top: 30px;
-}
+        .nav-item i {
+            width: 24px;
+            font-size: 1.2rem;
+        }
 
-.impact-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-}
+        /* Main Content */
+        .main {
+            flex: 1;
+            padding: 2.5rem;
+            overflow-y: auto;
+            position: relative;
+            z-index: 1;
+        }
 
-.impact-header h3 {
-    font-size: 1.5rem;
-    font-weight: 600;
-}
+        /* Header */
+        .page-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.impact-header span {
-    color: #8b9bb5;
-    font-size: 0.9rem;
-}
+        .header-left h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
 
-.impact-slider {
-    margin-bottom: 30px;
-}
+        .header-left p {
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
 
-.impact-slider label {
-    font-weight: 600;
-    display: block;
-    margin-bottom: 8px;
-}
+        .header-left p i {
+            color: #00ffff;
+        }
 
-.impact-slider input {
-    width: 100%;
-}
+        .live-badge {
+            background: rgba(239, 68, 68, 0.1);
+            padding: 0.6rem 1.5rem;
+            border-radius: 40px;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #f87171;
+            font-weight: 500;
+        }
 
-.impact-metrics {
-    border-top: 1px solid #1f2937;
-}
+        .pulse {
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
 
-.impact-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px 0;
-    border-bottom: 1px solid #1f2937;
-}
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
 
-.impact-row:last-child {
-    border-bottom: none;
-}
+        /* Main Simulator Card */
+        .simulator {
+            background: rgba(8, 12, 22, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            border-radius: 40px;
+            padding: 2.5rem;
+            box-shadow: 0 30px 60px -20px rgba(0, 255, 255, 0.2);
+        }
 
-.impact-label {
-    font-size: 1.05rem;
-    color: #b9c9e0;
-}
+        .simulator-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
 
-.impact-values {
-    font-size: 1.2rem;
-    font-weight: 600;
-}
+        .simulator-top h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #fff;
+        }
 
-.metric-current { color: #ef4444; }
-.metric-after { color: #22c55e; }
-.arrow { color: #3b82f6; margin: 0 12px; }
-</style>
+        .simulator-top h2 i {
+            color: #00ffff;
+        }
+
+        .success-circle {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.5);
+        }
+
+        .success-circle span:first-child {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+            color: #03050a;
+        }
+
+        .success-circle span:last-child {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            color: #03050a;
+            font-weight: 500;
+        }
+
+        /* Slider */
+        .slider-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .slider-header label {
+            color: #9ca3af;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .slider-value {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: #00ffff;
+            font-weight: 600;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, #ef4444, #fbbf24, #00ffff);
+            border-radius: 20px;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 30px #00ffff;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            color: #6b7280;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .metric-tile {
+            background: rgba(15, 20, 30, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 1.8rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-tile::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.05), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s;
+        }
+
+        .metric-tile:hover::after {
+            transform: translateX(100%);
+        }
+
+        .metric-tile:hover {
+            border-color: rgba(0, 255, 255, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .metric-icon {
+            font-size: 1.5rem;
+            color: #00ffff;
+            margin-bottom: 1.2rem;
+        }
+
+        .metric-label {
+            color: #9ca3af;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .metric-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: #4ade80;
+        }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .chart-tile {
+            background: rgba(15, 20, 30, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 1.8rem;
+            transition: all 0.3s;
+        }
+
+        .chart-tile:hover {
+            border-color: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 20px 40px -20px rgba(0, 255, 255, 0.2);
+        }
+
+        .chart-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-head h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #fff;
+        }
+
+        .chart-head h3 i {
+            color: #00ffff;
+        }
+
+        .chart-badge {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: #00ffff;
+            font-weight: 500;
+        }
+
+        /* Progress Ring */
+        .ring-container {
+            display: flex;
+            justify-content: center;
+            margin: 1.5rem 0;
+        }
+
+        .ring-svg {
+            width: 140px;
+            height: 140px;
+        }
+
+        .ring-bg {
+            stroke: #1f2937;
+            stroke-width: 8;
+            fill: none;
+        }
+
+        .ring-progress {
+            stroke: #00ffff;
+            stroke-width: 8;
+            fill: none;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 15px #00ffff);
+            transition: stroke-dasharray 0.3s;
+        }
+
+        .ring-text {
+            fill: #00ffff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        /* Dual Bars */
+        .dual-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .bar-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .bar-header {
+            display: flex;
+            justify-content: space-between;
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        .bar-track {
+            height: 30px;
+            background: #1f2937;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bar-current {
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #ef4444;
+            opacity: 0.5;
+            z-index: 1;
+            transition: width 0.3s;
+        }
+
+        .bar-projected {
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(90deg, #00ffff, #ff00ff);
+            z-index: 2;
+            transition: width 0.3s;
+        }
+
+        .bar-values {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .bar-current-value {
+            color: #ef4444;
+            font-weight: 500;
+        }
+
+        .bar-projected-value {
+            color: #00ffff;
+            font-weight: 600;
+        }
+
+        /* Trend Chart */
+        .trend-container {
+            height: 180px;
+            position: relative;
+            margin: 1.5rem 0;
+        }
+
+        .trend-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .trend-line {
+            stroke: url(#trendGradient);
+            stroke-width: 3;
+            fill: none;
+            filter: drop-shadow(0 0 15px #00ffff);
+        }
+
+        .trend-area {
+            fill: url(#areaGradient);
+            opacity: 0.2;
+        }
+
+        .trend-point {
+            fill: #00ffff;
+            filter: drop-shadow(0 0 10px #00ffff);
+        }
+
+        .trend-point-start {
+            fill: #ef4444;
+        }
+
+        /* KPI Row */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .kpi-item {
+            background: rgba(15, 20, 30, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .kpi-info h4 {
+            color: #9ca3af;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .kpi-info span {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .kpi-current {
+            color: #ef4444;
+        }
+
+        .kpi-arrow {
+            color: #00ffff;
+            margin: 0 0.5rem;
+            font-size: 1rem;
+        }
+
+        .kpi-projected {
+            color: #00ffff;
+        }
+
+        .kpi-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00ffff;
+            font-size: 1.3rem;
+        }
+
+        @media (max-width: 1400px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .kpi-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- SIDEBAR -->
+<!-- Sidebar -->
 <aside class="sidebar">
-    <div class="logo-area">
-        <i class="fas fa-dumbbell"></i>
-        <span>Gym Customer<br>Churn Prediction</span>
+    <div class="logo">
+        <div class="logo-icon">
+            <i class="fas fa-dumbbell"></i>
+        </div>
+        <div class="logo-text">
+            <h1>Gym Customer<br>Churn Prediction</h1>
+        </div>
     </div>
 
-     <div class="nav">
-    <div class="nav-item" onclick="window.location.href='/dashboard'">📊 Overview</div>
-    <div class="nav-item" onclick="window.location.href='/prediction'">🔮 Prediction</div>
-    <div class="nav-item" onclick="window.location.href='/suggestions'">💡 Suggestions</div>
-    <div class="nav-item" onclick="window.location.href='/impact'">💼 Business Impact</div>
-</div>
-
-    <div class="user-tag">churn guard v1.0</div>
+    <nav class="nav">
+        <div class="nav-item" onclick="window.location.href='/dashboard'">
+            <i class="fas fa-chart-pie"></i> Dashboard
+        </div>
+        <div class="nav-item" onclick="window.location.href='/prediction'">
+            <i class="fas fa-brain"></i> Prediction
+        </div>
+        <div class="nav-item" onclick="window.location.href='/suggestions'">
+            <i class="fas fa-lightbulb"></i> Insights
+        </div>
+        <div class="nav-item active" onclick="window.location.href='/impact'">
+            <i class="fas fa-chart-line"></i> Impact
+        </div>
+    </nav>
 </aside>
 
-<!-- SECTION 3: INTERACTIVE BUSINESS IMPACT SIMULATOR -->
-<div class="impact-simulator">
-    <div class="simulator-header">
-        <div>
-            <h3>📈 business impact simulator</h3>
-            <p style="color: #8b9bb5; margin-top: 5px;">drag slider to adjust success rate · real-time projections</p>
+<!-- Main Content -->
+<main class="main">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="header-left">
+            <h1>BUSINESS IMPACT</h1>
+            <p>
+                <i class="fas fa-circle"></i>
+                Real-time simulation • Drag to adjust
+            </p>
         </div>
-        <div class="success-rate-display">
-            <span class="success-rate-value" id="sliderValue">40%</span>
-            <span style="color: #8b9bb5; font-size: 0.9rem;">success rate</span>
-        </div>
-    </div>
-
-    <!-- Slider Control -->
-    <div class="slider-container">
-        <input type="range" min="0" max="100" value="40" class="impact-slider" id="retentionSlider">
-        <div class="slider-labels">
-            <span>0%</span>
-            <span>25%</span>
-            <span>50%</span>
-            <span>75%</span>
-            <span>100%</span>
+        <div class="live-badge">
+            <span class="pulse"></span>
+            <span>LIVE SIMULATION</span>
         </div>
     </div>
 
-    <!-- Charts Grid -->
-    <div class="charts-grid">
-        <!-- CHART 1: Churn Rate Reduction - Gradient Progress Bar -->
-        <div class="chart-card">
-            <div class="chart-header">
-                <div class="chart-title-row">
-                    <span class="chart-title">📉 Churn Rate Reduction</span>
-                    <span class="chart-value" id="churnImprovement">-28%</span>
-                </div>
-                <p class="chart-subtitle">Retention Success Rate: <span class="success-rate-highlight" id="retentionRateDisplay">40%</span></p>
+    <!-- Main Simulator -->
+    <div class="simulator">
+        <!-- Top Bar -->
+        <div class="simulator-top">
+            <h2>
+                <i class="fas fa-sliders-h"></i>
+                Success Simulator
+            </h2>
+            <div class="success-circle">
+                <span id="sliderValue">40%</span>
+                <span>active</span>
             </div>
+        </div>
+
+        <!-- Slider -->
+        <div class="slider-section">
+            <div class="slider-header">
+                <label>Retention Success Rate</label>
+                <span class="slider-value" id="sliderPercent">40%</span>
+            </div>
+            <input type="range" min="0" max="100" value="40" class="slider" id="retentionSlider">
+            <div class="slider-labels">
+                <span>0%</span>
+                <span>25%</span>
+                <span>50%</span>
+                <span>75%</span>
+                <span>100%</span>
+            </div>
+        </div>
+
+        <!-- Quick Metrics -->
+        <div class="metrics-grid">
+            <div class="metric-tile">
+                <div class="metric-icon"><i class="fas fa-users"></i></div>
+                <div class="metric-label">Members Saved</div>
+                <div class="metric-number" id="membersSaved">0</div>
+                <div class="metric-trend" id="revenueSaved">$0 retained</div>
+            </div>
+            <div class="metric-tile">
+                <div class="metric-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="metric-label">High Risk</div>
+                <div class="metric-number" id="highRiskMembers">0</div>
+                <div class="metric-trend">needs attention</div>
+            </div>
+            <div class="metric-tile">
+                <div class="metric-icon"><i class="fas fa-calendar-check"></i></div>
+                <div class="metric-label">Attendance</div>
+                <div class="metric-number" id="kpiAttendance">0%</div>
+                <div class="metric-trend" id="kpiProjectedAttendance">→ 0%</div>
+            </div>
+            <div class="metric-tile">
+                 <div class="metric-icon"><i class="fas fa-users"></i></div>
+                <div class="metric-label">Annual Members</div>
+                <div class="metric-number" id="kpiAnnual">0%</div>
+                <div class="metric-trend" id="kpiProjectedAnnual">→ 0%</div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- Chart 1: Churn Reduction -->
+            <div class="chart-tile">
+                <div class="chart-head">
+                    <h3><i class="fas fa-chart-line"></i> Churn Reduction</h3>
+                    <span class="chart-badge" id="churnImprovement">-0%</span>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
+                    <div>
+                        <div style="color: #9ca3af; font-size: 0.7rem; margin-bottom: 0.3rem;">Current</div>
+                        <div style="color: #ef4444; font-size: 2rem; font-weight: 700;" id="currentChurn">0%</div>
+                    </div>
+                    <div>
+                        <div style="color: #9ca3af; font-size: 0.7rem; margin-bottom: 0.3rem;">Projected</div>
+                        <div style="color: #00ffff; font-size: 2rem; font-weight: 700;" id="projectedChurn">0%</div>
+                    </div>
+                </div>
+
+                <div style="position: relative; height: 60px; margin: 1rem 0;">
+                    <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 30px; background: #1f2937; border-radius: 20px;"></div>
+                    <div class="bar-projected" style="height: 30px; border-radius: 20px; width: 0%; bottom: 0; position: absolute;" id="churnGradientBar"></div>
+                    <div style="position: absolute; bottom: 35px; left: 0%; transform: translateX(-50%);" id="currentChurnMarker">
+                        <div style="width: 12px; height: 12px; background: #ef4444; border-radius: 50%; box-shadow: 0 0 20px #ef4444; margin-bottom: 5px;"></div>
+                        <div style="background: #1f2937; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.7rem; white-space: nowrap; color: #fff;" id="currentChurnLabel">0%</div>
+                    </div>
+                    <div style="position: absolute; bottom: 35px; left: 0%; transform: translateX(-50%);" id="projectedChurnMarker">
+                        <div style="width: 12px; height: 12px; background: #00ffff; border-radius: 50%; box-shadow: 0 0 20px #00ffff; margin-bottom: 5px;"></div>
+                        <div style="background: #1f2937; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.7rem; white-space: nowrap; color: #fff;" id="projectedChurnLabel">0%</div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; color: #9ca3af; font-size: 0.8rem;" id="churnFooter">0 percentage point reduction</div>
+            </div>
+
+            <!-- Chart 2: Revenue Ring -->
+            <div class="chart-tile">
+                <div class="chart-head">
+                    <h3><i class="fas fa-coins"></i> Revenue Impact</h3>
+                    <span class="chart-badge" id="revenueIncrease">+$0</span>
+                </div>
+                
+                <div class="ring-container">
+                    <svg viewBox="0 0 100 100" class="ring-svg">
+                        <circle cx="50" cy="50" r="40" class="ring-bg" />
+                        <circle cx="50" cy="50" r="40" class="ring-progress" id="revenueRing" stroke-dasharray="0 251.2" transform="rotate(-90 50 50)" />
+                        <text x="50" y="55" class="ring-text" id="revenuePercent">0%</text>
+                    </svg>
+                </div>
+
+                <div style="text-align: center; color: #9ca3af; font-size: 0.8rem;" id="revenueFooter">$0 → $0 retained</div>
+            </div>
+
+            <!-- Chart 3: Engagement Bars -->
+            <div class="chart-tile">
+                <div class="chart-head">
+                    <h3><i class="fas fa-users"></i> Engagement Growth</h3>
+                    <span class="chart-badge" id="engagementIncrease">+0%</span>
+                </div>
+                
+                <div class="dual-bars">
+                    <div class="bar-item">
+                        <div class="bar-header">
+                            <span>Class Attendance</span>
+                            <span><span class="bar-current-value" id="currentAttendance">0%</span> → <span class="bar-projected-value" id="attendanceVal">0%</span></span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-current" id="currentAttendanceBar" style="width: 0%;"></div>
+                            <div class="bar-projected" id="attendanceBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar-header">
+                            <span>Annual Members</span>
+                            <span><span class="bar-current-value" id="currentAnnual">0%</span> → <span class="bar-projected-value" id="annualVal">0%</span></span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-current" id="currentAnnualBar" style="width: 0%;"></div>
+                            <div class="bar-projected" id="annualBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart 4: Complaints Trend -->
+            <div class="chart-tile">
+                <div class="chart-head">
+                    <h3><i class="fas fa-exclamation-circle"></i> Complaints Trend</h3>
+                    <span class="chart-badge" id="complaintsReduction">-0%</span>
+                </div>
+                
+                <div class="trend-container">
+                    <svg viewBox="0 0 300 100" class="trend-svg" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="trendGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#ef4444" />
+                                <stop offset="100%" stop-color="#00ffff" />
+                            </linearGradient>
+                            <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#00ffff" stop-opacity="0.3" />
+                                <stop offset="100%" stop-color="#00ffff" stop-opacity="0" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <polygon class="trend-area" id="trendArea" points="0,100 0,80 300,20 300,100" />
+                        <path class="trend-line" id="trendLine" d="M0,80 L300,20" />
+                        
+                        <circle class="trend-point-start" cx="0" cy="80" r="5" id="trendStart" />
+                        <circle class="trend-point" cx="300" cy="20" r="5" id="trendEnd" />
+                    </svg>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
+                    <div>
+                        <div style="color: #9ca3af; font-size: 0.7rem; margin-bottom: 0.3rem;">Current</div>
+                        <div style="color: #ef4444; font-weight: 600;" id="currentComplaintLabel">0</div>
+                    </div>
+                    <div>
+                        <div style="color: #9ca3af; font-size: 0.7rem; margin-bottom: 0.3rem;">Projected</div>
+                        <div style="color: #00ffff; font-weight: 600;" id="projectedComplaintLabel">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom KPI Row -->
+        <div class="kpi-row">
+            <div class="kpi-item">
+                <div class="kpi-info">
+                    <h4>Members Saved</h4>
+                    <span class="kpi-current" id="membersSavedBottom">0</span>
+                </div>
+                <div class="kpi-icon"><i class="fas fa-user-check"></i></div>
+            </div>
+            <div class="kpi-item">
+                <div class="kpi-info">
+                    <h4>Revenue</h4>
+                    <span class="kpi-current" id="revenueSavedBottom">$0</span>
+                </div>
+                <div class="kpi-icon"><i class="fas fa-dollar-sign"></i></div>
+            </div>
+            <div class="kpi-item">
+                <div class="kpi-info">
+                    <h4>Attendance</h4>
+                    <span class="kpi-current" id="attendanceBottom">0%</span>
+                    <span class="kpi-arrow">→</span>
+                    <span class="kpi-projected" id="attendanceProjBottom">0%</span>
+                </div>
+                <div class="kpi-icon"><i class="fas fa-calendar"></i></div>
+            </div>
+            <div class="kpi-item">
+                <div class="kpi-info">
+                    <h4>Annual</h4>
+                    <span class="kpi-current" id="annualBottom">0%</span>
+                    <span class="kpi-arrow">→</span>
+                    <span class="kpi-projected" id="annualProjBottom">0%</span>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let baseData = null;
+
+        async function loadBusinessImpact(){
+            try {
+                const res = await fetch('/api/business-impact');
+                baseData = await res.json();
+                baseData.current_churn_rate *= 100;
+                updateSimulation(40);
+            } catch(err){
+                console.error(err);
+                // Fallback data for preview
+                baseData = {
+                    current_churn_rate: 38.16,
+                    class_attendance_rate: 42.3,
+                    annual_membership_ratio: 31.5,
+                    avg_complaints: 3.2,
+                    high_risk_members: 2009,
+                    avg_member_value: 1000
+                };
+                updateSimulation(40);
+            }
+        }
+
+        function updateSimulation(value){
+            if(!baseData) return;
+
+            const factor = value / 100;
+
+            const churn = baseData.current_churn_rate;
+            const attendance = baseData.class_attendance_rate;
+            const annual = baseData.annual_membership_ratio;
+            const complaints = baseData.avg_complaints;
+            const highRisk = baseData.high_risk_members;
+            const avgValue = baseData.avg_member_value;
+
+            const projectedChurn = Math.max(0, churn - (churn * factor * 0.7));
+            const projectedAttendance = Math.min(100, attendance + ((100 - attendance) * factor * 0.6));
+            const projectedAnnual = Math.min(100, annual + ((100 - annual) * factor * 0.5));
+            const projectedComplaints = Math.max(0, complaints - (complaints * factor * 0.8));
+
+            const savedMembers = Math.round(highRisk * factor);
+            const revenueSaved = savedMembers * avgValue;
+
+            const churnImprovement = ((churn - projectedChurn) / churn * 100).toFixed(1);
+            const complaintsReduction = ((complaints - projectedComplaints) / complaints * 100).toFixed(0);
+            const avgEngagementIncrease = Math.round(((projectedAttendance - attendance) + (projectedAnnual - annual)) / 2);
+
+            // Update displays
+            document.getElementById("sliderValue").innerText = value + "%";
+            document.getElementById("sliderPercent").innerText = value + "%";
+
+            // Churn Chart
+            document.getElementById("currentChurn").innerText = churn.toFixed(1) + "%";
+            document.getElementById("projectedChurn").innerText = projectedChurn.toFixed(1) + "%";
+            document.getElementById("churnImprovement").innerText = "-" + churnImprovement + "%";
             
-            <div class="comparative-container">
-                <!-- Current vs Projected Labels -->
-                <div class="comparative-labels">
-                    <div class="label-group current">
-                        <span class="label-text">Current</span>
-                        <span class="label-value" id="currentChurn">0%</span>
-                    </div>
-                    <div class="label-group projected">
-                        <span class="label-text">Projected</span>
-                        <span class="label-value" id="projectedChurn">0%</span>
-                    </div>
-                </div>
-                
-                <!-- Gradient Progress Bar -->
-                <div class="gradient-bar-container">
-                    <div class="gradient-bar-track">
-                        <div class="gradient-bar-fill" id="churnGradientBar" style="width: 0%">
-                            <div class="gradient-effect"></div>
-                        </div>
-                    </div>
-                    
-                    <!-- Markers -->
-                    <div class="bar-markers">
-                        <div class="marker current-marker" id="currentChurnMarker" style="left: 0%">
-                            <span class="marker-dot"></span>
-                            <span class="marker-label">Current: 0%</span>
-                        </div>
-                        <div class="marker projected-marker" id="projectedChurnMarker" style="left: 0%">
-                            <span class="marker-dot"></span>
-                            <span class="marker-label">Projected: 0%</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Improvement Indicator -->
-                <div class="improvement-indicator" id="churnImprovementIndicator">
-                    <span class="improvement-arrow">↓</span>
-                    <span class="improvement-value">-0%</span>
-                    <span class="improvement-label">improvement</span>
-                </div>
-            </div>
-            <div class="chart-footer" id="churnFooter">churn reduction of 0 percentage points</div>
-        </div>
-
-        <!-- Chart 2: Revenue Impact -->
-        <div class="chart-card">
-            <div class="chart-title">
-                <span>💰 revenue retained</span>
-                <span class="chart-value" id="revenueIncrease">+$0</span>
-            </div>
-            <div class="progress-circle-container">
-                <svg viewBox="0 0 36 36" class="circular-chart">
-                    <path class="circle-bg"
-                        d="M18 2.0845
-                        a 15.9155 15.9155 0 0 1 0 31.831
-                        a 15.9155 15.9155 0 0 1 0 -31.831"
-                    />
-                    <path class="circle-progress" id="revenueCircle"
-                        d="M18 2.0845
-                        a 15.9155 15.9155 0 0 1 0 31.831
-                        a 15.9155 15.9155 0 0 1 0 -31.831"
-                        stroke-dasharray="40, 100"
-                    />
-                    <text x="18" y="20.35" class="percentage" id="revenuePercent">40%</text>
-                </svg>
-            </div>
-            <div class="chart-footer" id="revenueFooter">$0 → $0 annual</div>
-        </div>
-
-        <!-- Chart 3: Engagement Trends -->
-        <div class="chart-card">
-            <div class="chart-title">
-                <span>📊 engagement growth</span>
-                <span class="chart-value" id="engagementIncrease">+0%</span>
-            </div>
-            <div class="dual-metric-chart">
-                <div class="metric-mini">
-                    <span class="mini-label">attendance</span>
-                    <div class="mini-bar-container">
-                        <div class="mini-bar current" id="currentAttendanceBar" style="width: 0%;"></div>
-                        <div class="mini-bar projected" id="attendanceBar" style="width: 0%;"></div>
-                    </div>
-                    <div class="mini-values">
-                        <span class="current-val" id="currentAttendance">0%</span>
-                        <span class="projected-val" id="attendanceVal">0%</span>
-                    </div>
-                </div>
-                <div class="metric-mini">
-                    <span class="mini-label">annual members</span>
-                    <div class="mini-bar-container">
-                        <div class="mini-bar current" id="currentAnnualBar" style="width: 0%;"></div>
-                        <div class="mini-bar projected" id="annualBar" style="width: 0%;"></div>
-                    </div>
-                    <div class="mini-values">
-                        <span class="current-val" id="currentAnnual">0%</span>
-                        <span class="projected-val" id="annualVal">0%</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- CHART 4: Average Complaints per Member - Declining Trend Line -->
-        <div class="chart-card">
-            <div class="chart-header">
-                <div class="chart-title-row">
-                    <span class="chart-title">⚠️ Average Complaints per Member</span>
-                    <span class="chart-value" id="complaintsReduction">-0%</span>
-                </div>
-                <p class="chart-subtitle">Retention Success Rate: <span class="success-rate-highlight" id="complaintsRetentionRate">40%</span></p>
-            </div>
+            const maxChurn = 40;
+            const currentPos = Math.min((churn / maxChurn) * 100, 100);
+            const projectedPos = Math.min((projectedChurn / maxChurn) * 100, 100);
             
-            <div class="trend-chart-container">
-                <!-- Chart Area -->
-                <div class="trend-chart-wrapper">
-                    <!-- Y-Axis Label -->
-                    <div class="y-axis-label">Complaints per Member</div>
-                    
-                    <!-- Chart Grid -->
-                    <div class="trend-chart-grid">
-                        <!-- Horizontal grid lines -->
-                        <div class="grid-line horizontal" style="bottom: 0%"></div>
-                        <div class="grid-line horizontal" style="bottom: 25%"></div>
-                        <div class="grid-line horizontal" style="bottom: 50%"></div>
-                        <div class="grid-line horizontal" style="bottom: 75%"></div>
-                        <div class="grid-line horizontal" style="bottom: 100%"></div>
-                        
-                        <!-- Vertical grid lines -->
-                        <div class="grid-line vertical" style="left: 0%"></div>
-                        <div class="grid-line vertical" style="left: 25%"></div>
-                        <div class="grid-line vertical" style="left: 50%"></div>
-                        <div class="grid-line vertical" style="left: 75%"></div>
-                        <div class="grid-line vertical" style="left: 100%"></div>
-                        
-                        <!-- Gradient area under curve -->
-                        <svg class="gradient-area-svg" viewBox="0 0 100 40" preserveAspectRatio="none">
-                            <defs>
-                                <linearGradient id="complaintsGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" stop-color="#ef4444" stop-opacity="0.15" />
-                                    <stop offset="50%" stop-color="#fbbf24" stop-opacity="0.15" />
-                                    <stop offset="100%" stop-color="#4ade80" stop-opacity="0.15" />
-                                </linearGradient>
-                            </defs>
-                            <polygon id="gradientArea" points="0,40 0,8 100,32 100,40" fill="url(#complaintsGradient)" />
-                        </svg>
-                        
-                        <!-- Trend Line -->
-                        <svg class="trend-line-svg" viewBox="0 0 100 40" preserveAspectRatio="none">
-                            <!-- Smooth curved line -->
-                            <path id="complaintsTrendLine" 
-                                  d="M0,8 L100,32" 
-                                  stroke="url(#lineGradient)" 
-                                  stroke-width="2.5" 
-                                  fill="none" 
-                                  stroke-linecap="round" />
-                            
-                            <!-- Gradient definition for line -->
-                            <defs>
-                                <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" stop-color="#ef4444" />
-                                    <stop offset="50%" stop-color="#fbbf24" />
-                                    <stop offset="100%" stop-color="#4ade80" />
-                                </linearGradient>
-                                
-                                <!-- Glow filter -->
-                                <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
-                                    <feGaussianBlur stdDeviation="2" result="blur" />
-                                    <feMerge>
-                                        <feMergeNode in="blur" />
-                                        <feMergeNode in="SourceGraphic" />
-                                    </feMerge>
-                                </filter>
-                            </defs>
-                            
-                            <!-- Data points -->
-                            <circle id="currentComplaintPoint" cx="0" cy="8" r="4" fill="#ef4444" stroke="#0f172a" stroke-width="1.5" filter="url(#glow)" />
-                            <circle id="projectedComplaintPoint" cx="100" cy="32" r="4" fill="#4ade80" stroke="#0f172a" stroke-width="1.5" filter="url(#glow)" />
-                        </svg>
-                        
-                        <!-- Markers with labels -->
-                        <div class="chart-markers">
-                            <div class="marker start-marker" style="left: 0%; bottom: 20%;">
-                                <span class="marker-dot" style="background: #ef4444;"></span>
-                                <span class="marker-text" id="currentComplaintLabel">Current: 0</span>
-                            </div>
-                            <div class="marker end-marker" style="left: 100%; bottom: 80%;">
-                                <span class="marker-dot" style="background: #4ade80;"></span>
-                                <span class="marker-text" id="projectedComplaintLabel">Projected: 0</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- X-Axis Label -->
-                    <div class="x-axis-label">Months (1-12)</div>
-                </div>
-                
-                <!-- Month Labels -->
-                <div class="month-labels">
-                    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span>
-                    <span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span>
-                </div>
-            </div>
-            <div class="chart-footer" id="complaintsFooter">avg complaints: 12-month projection</div>
-        </div>
-    </div>
-
-    <!-- KPI Grid -->
-    <div class="metrics-preview" style="margin-top: 25px;">
-        <div class="metric-row">
-            <span class="metric-name">Members saved from churn</span>
-            <span>
-                <span class="metric-current" id="membersSaved">0</span>
-                <span class="arrow">→</span>
-                <span class="metric-after" id="revenueSaved">$0</span>
-            </span>
-        </div>
-        <div class="metric-row">
-            <span class="metric-name">High-risk members</span>
-            <span>
-                <span class="metric-current" id="highRiskMembers">0</span>
-            </span>
-        </div>
-        <div class="metric-row">
-            <span class="metric-name">Class attendance rate</span>
-            <span>
-                <span class="metric-current" id="kpiAttendance">0%</span>
-                <span class="arrow">→</span>
-                <span class="metric-after" id="kpiProjectedAttendance">0%</span>
-            </span>
-        </div>
-        <div class="metric-row">
-            <span class="metric-name">Annual membership ratio</span>
-            <span>
-                <span class="metric-current" id="kpiAnnual">0%</span>
-                <span class="arrow">→</span>
-                <span class="metric-after" id="kpiProjectedAnnual">0%</span>
-            </span>
-        </div>
-    </div>
-</div>
-
-<style>
-/* All your existing styles from previous code - keeping them exactly the same */
-.impact-simulator {
-    background: linear-gradient(145deg, #0f172a, #131823);
-    border-radius: 28px;
-    padding: 2rem;
-    margin-top: 30px;
-    border: 1px solid #3b82f630;
-}
-
-.simulator-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-}
-
-.success-rate-display {
-    background: #1f2a37;
-    padding: 10px 20px;
-    border-radius: 60px;
-    text-align: center;
-}
-
-.success-rate-value {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #4ade80;
-    display: block;
-    line-height: 1.2;
-}
-
-.slider-container {
-    margin-bottom: 30px;
-    padding: 0 10px;
-}
-
-.impact-slider {
-    width: 100%;
-    height: 8px;
-    border-radius: 10px;
-    background: linear-gradient(90deg, #3b82f6, #4ade80, #fbbf24);
-    -webkit-appearance: none;
-}
-
-.impact-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 24px;
-    height: 24px;
-    background: white;
-    border-radius: 50%;
-    box-shadow: 0 4px 10px #3b82f6;
-    cursor: pointer;
-    border: 2px solid #3b82f6;
-}
-
-.slider-labels {
-    display: flex;
-    justify-content: space-between;
-    color: #6f7d98;
-    font-size: 0.8rem;
-    margin-top: 8px;
-}
-
-.charts-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    margin-bottom: 25px;
-}
-
-.chart-card {
-    background: #0f172a;
-    border-radius: 24px;
-    padding: 1.5rem;
-    border: 1px solid #263040;
-    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
-}
-
-.chart-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 5px;
-    color: #b9c9e0;
-    font-size: 0.95rem;
-}
-
-.chart-title-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 0.25rem;
-}
-
-.chart-value {
-    color: #4ade80;
-    font-weight: 600;
-    font-size: 1.1rem;
-}
-
-.chart-subtitle {
-    color: #8b9bb5;
-    font-size: 0.8rem;
-    margin: 0 0 1rem 0;
-}
-
-.success-rate-highlight {
-    color: #4ade80;
-    font-weight: 600;
-    background: rgba(74, 222, 128, 0.1);
-    padding: 0.1rem 0.4rem;
-    border-radius: 20px;
-}
-
-.chart-footer {
-    margin-top: 12px;
-    color: #8b9bb5;
-    font-size: 0.85rem;
-    text-align: center;
-}
-
-/* Chart 1 Styles */
-.comparative-container {
-    margin: 0.5rem 0;
-}
-
-.comparative-labels {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-}
-
-.label-group {
-    display: flex;
-    flex-direction: column;
-}
-
-.label-group.current .label-value {
-    color: #ef4444;
-    font-size: 1.8rem;
-    font-weight: 700;
-    line-height: 1.2;
-}
-
-.label-group.projected .label-value {
-    color: #4ade80;
-    font-size: 1.8rem;
-    font-weight: 700;
-    line-height: 1.2;
-}
-
-.label-text {
-    color: #8b9bb5;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.gradient-bar-container {
-    position: relative;
-    margin: 1.5rem 0 1rem;
-}
-
-.gradient-bar-track {
-    height: 24px;
-    background: #1f2a37;
-    border-radius: 100px;
-    overflow: hidden;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.gradient-bar-fill {
-    height: 100%;
-    border-radius: 100px;
-    position: relative;
-    transition: width 0.3s ease;
-}
-
-.gradient-effect {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-        #ef4444 0%, 
-        #f97316 25%, 
-        #fbbf24 50%, 
-        #4ade80 75%, 
-        #22c55e 100%);
-    filter: drop-shadow(0 0 8px rgba(74, 222, 128, 0.3));
-}
-
-.bar-markers {
-    position: relative;
-    height: 40px;
-    margin-top: 5px;
-}
-
-.bar-markers .marker {
-    position: absolute;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: left 0.3s ease;
-}
-
-.bar-markers .marker .marker-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin-bottom: 4px;
-    box-shadow: 0 0 15px currentColor;
-}
-
-.bar-markers .marker.current-marker .marker-dot {
-    background: #ef4444;
-    box-shadow: 0 0 15px #ef4444;
-}
-
-.bar-markers .marker.projected-marker .marker-dot {
-    background: #4ade80;
-    box-shadow: 0 0 15px #4ade80;
-}
-
-.bar-markers .marker .marker-label {
-    color: #f0f4fa;
-    font-size: 0.7rem;
-    white-space: nowrap;
-    background: #1f2a37;
-    padding: 0.2rem 0.5rem;
-    border-radius: 20px;
-    border: 1px solid #2d3748;
-}
-
-.improvement-indicator {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: rgba(74, 222, 128, 0.1);
-    padding: 0.4rem 1rem;
-    border-radius: 100px;
-    margin-top: 0.5rem;
-}
-
-.improvement-arrow {
-    color: #4ade80;
-    font-size: 1.2rem;
-    font-weight: bold;
-}
-
-.improvement-value {
-    color: #4ade80;
-    font-size: 1.1rem;
-    font-weight: 700;
-}
-
-.improvement-label {
-    color: #8b9bb5;
-    font-size: 0.8rem;
-}
-
-/* Chart 2 Styles */
-.progress-circle-container {
-    display: flex;
-    justify-content: center;
-    margin: 10px 0;
-}
-
-.circular-chart {
-    width: 120px;
-    height: 120px;
-}
-
-.circle-bg {
-    stroke: #1f2a37;
-    stroke-width: 2.8;
-    fill: none;
-}
-
-.circle-progress {
-    stroke: #4ade80;
-    stroke-width: 2.8;
-    fill: none;
-    stroke-linecap: round;
-    transition: stroke-dasharray 0.3s;
-}
-
-.percentage {
-    fill: white;
-    font-size: 0.5rem;
-    text-anchor: middle;
-    font-weight: 600;
-}
-
-/* Chart 3 Styles */
-.dual-metric-chart {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.metric-mini {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.mini-label {
-    color: #8b9bb5;
-    font-size: 0.85rem;
-}
-
-.mini-bar-container {
-    height: 20px;
-    background: #1f2a37;
-    border-radius: 10px;
-    position: relative;
-    overflow: hidden;
-}
-
-.mini-bar {
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-.mini-bar.current {
-    background: #ef4444;
-    opacity: 0.5;
-    z-index: 1;
-}
-
-.mini-bar.projected {
-    background: #3b82f6;
-    z-index: 2;
-}
-
-.mini-values {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.85rem;
-}
-
-.current-val {
-    color: #ef4444;
-}
-
-.projected-val {
-    color: #3b82f6;
-    font-weight: 600;
-}
-
-/* Chart 4 Styles */
-.trend-chart-container {
-    margin: 0.5rem 0;
-}
-
-.trend-chart-wrapper {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.y-axis-label {
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    color: #6f7d98;
-    font-size: 0.7rem;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-    height: 160px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.7;
-}
-
-.trend-chart-grid {
-    position: relative;
-    width: 100%;
-    height: 160px;
-    background: #0a0f1a;
-    border-radius: 16px;
-    flex: 1;
-}
-
-.grid-line {
-    position: absolute;
-    background: rgba(139, 155, 181, 0.1);
-}
-
-.grid-line.horizontal {
-    width: 100%;
-    height: 1px;
-    left: 0;
-    transform: translateY(50%);
-}
-
-.grid-line.vertical {
-    width: 1px;
-    height: 100%;
-    top: 0;
-    transform: translateX(-50%);
-}
-
-.gradient-area-svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    pointer-events: none;
-}
-
-.trend-line-svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-    overflow: visible;
-}
-
-.chart-markers {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 3;
-    pointer-events: none;
-}
-
-.chart-markers .marker {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-}
-
-.chart-markers .marker .marker-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    box-shadow: 0 0 15px currentColor;
-}
-
-.chart-markers .marker .marker-text {
-    color: #f0f4fa;
-    font-size: 0.65rem;
-    background: #1f2a37;
-    padding: 0.2rem 0.4rem;
-    border-radius: 20px;
-    border: 1px solid #2d3748;
-    white-space: nowrap;
-}
-
-.x-axis-label {
-    text-align: center;
-    color: #6f7d98;
-    font-size: 0.7rem;
-    margin-top: 0.25rem;
-    letter-spacing: 0.5px;
-    opacity: 0.7;
-}
-
-.month-labels {
-    display: flex;
-    justify-content: space-between;
-    color: #6f7d98;
-    font-size: 0.6rem;
-    margin-top: 0.25rem;
-    padding: 0 0.5rem;
-}
-
-/* KPI Preview Styles */
-.metrics-preview {
-    background: #0f172a;
-    border-radius: 16px;
-    padding: 1.2rem;
-    border: 1px solid #263040;
-}
-
-.metric-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid #263040;
-}
-
-.metric-row:last-child {
-    border-bottom: none;
-}
-
-.metric-name {
-    color: #8b9bb5;
-    font-size: 0.9rem;
-}
-
-.metric-current {
-    color: #ef4444;
-    font-weight: 500;
-}
-
-.arrow {
-    color: #8b9bb5;
-    margin: 0 8px;
-}
-
-.metric-after {
-    color: #4ade80;
-    font-weight: 600;
-}
-</style>
-
-<script>
-let baseData = null;
-
-async function loadBusinessImpact(){
-    try {
-        const res = await fetch('/api/business-impact');
-        baseData = await res.json();
-        baseData.current_churn_rate *= 100; // Convert to percentage
-        updateSimulation(40); // Initialize with 40%
-    } catch(err){
-        console.error(err);
-    }
-}
-
-function updateSimulation(value){
-    if(!baseData) return;
-
-    const factor = value / 100;
-
-    // Get real data from backend
-    const churn = baseData.current_churn_rate;
-    const attendance = baseData.class_attendance_rate;
-    const annual = baseData.annual_membership_ratio;
-    const complaints = baseData.avg_complaints;
-    const highRisk = baseData.high_risk_members;
-    const avgValue = baseData.avg_member_value;
-
-    // Calculate projections (you can adjust these formulas)
-    const projectedChurn = Math.max(0, churn - (churn * factor * 0.7));
-    const projectedAttendance = Math.min(100, attendance + ((100 - attendance) * factor * 0.6));
-    const projectedAnnual = Math.min(100, annual + ((100 - annual) * factor * 0.5));
-    const projectedComplaints = Math.max(0, complaints - (complaints * factor * 0.8));
-
-    const savedMembers = Math.round(highRisk * factor);
-    const revenueSaved = savedMembers * avgValue;
-
-    // Calculate improvements
-    const churnImprovement = ((churn - projectedChurn) / churn * 100).toFixed(1);
-    const complaintsReduction = ((complaints - projectedComplaints) / complaints * 100).toFixed(0);
-    const avgEngagementIncrease = Math.round(((projectedAttendance - attendance) + (projectedAnnual - annual)) / 2);
-
-    // Update slider value
-    document.getElementById("sliderValue").innerText = value + "%";
-
-    // ===== CHART 1: Churn Rate Updates =====
-    document.getElementById("currentChurn").innerText = churn.toFixed(1) + "%";
-    document.getElementById("projectedChurn").innerText = projectedChurn.toFixed(1) + "%";
-    document.getElementById("retentionRateDisplay").innerText = value + "%";
-    document.getElementById("churnImprovement").innerText = "-" + churnImprovement + "%";
-    
-    // Update gradient bar (scale to max 40% for visual - adjust if your churn is higher)
-    const maxChurnVisual = 40;
-    const currentBarPos = Math.min((churn / maxChurnVisual) * 100, 100);
-    const projectedBarPos = Math.min((projectedChurn / maxChurnVisual) * 100, 100);
-    
-    document.getElementById('churnGradientBar').style.width = projectedBarPos + '%';
-    document.getElementById('currentChurnMarker').style.left = currentBarPos + '%';
-    document.getElementById('projectedChurnMarker').style.left = projectedBarPos + '%';
-    
-    // Update marker labels
-    document.querySelector('#currentChurnMarker .marker-label').innerHTML = `Current: ${churn.toFixed(1)}%`;
-    document.querySelector('#projectedChurnMarker .marker-label').innerHTML = `Projected: ${projectedChurn.toFixed(1)}%`;
-    
-    // Update improvement indicator
-    document.getElementById('churnImprovementIndicator').innerHTML = `
-        <span class="improvement-arrow">↓</span>
-        <span class="improvement-value">-${churnImprovement}%</span>
-        <span class="improvement-label">improvement</span>
-    `;
-    document.getElementById('churnFooter').innerHTML = `churn reduction of ${(churn - projectedChurn).toFixed(1)} percentage points`;
-
-    // ===== CHART 2: Revenue Updates =====
-    const revenueCircle = document.getElementById('revenueCircle');
-    const dashValue = value; // Use slider value directly for circle
-    revenueCircle.setAttribute('stroke-dasharray', `${dashValue}, 100`);
-    document.getElementById('revenuePercent').innerText = value + '%';
-    document.getElementById('revenueIncrease').innerHTML = '+$' + Math.round(revenueSaved).toLocaleString();
-    document.getElementById('revenueFooter').innerHTML = `$${Math.round(highRisk * avgValue).toLocaleString()} → $${Math.round(revenueSaved).toLocaleString()} retained`;
-
-    // ===== CHART 3: Engagement Updates =====
-    // Update bars
-    document.getElementById('currentAttendanceBar').style.width = attendance + '%';
-    document.getElementById('attendanceBar').style.width = projectedAttendance + '%';
-    document.getElementById('currentAnnualBar').style.width = annual + '%';
-    document.getElementById('annualBar').style.width = projectedAnnual + '%';
-    
-    // Update values
-    document.getElementById('currentAttendance').innerText = attendance.toFixed(1) + '%';
-    document.getElementById('attendanceVal').innerText = projectedAttendance.toFixed(1) + '%';
-    document.getElementById('currentAnnual').innerText = annual.toFixed(1) + '%';
-    document.getElementById('annualVal').innerText = projectedAnnual.toFixed(1) + '%';
-    
-    document.getElementById('engagementIncrease').innerText = '+' + avgEngagementIncrease + '%';
-
-    // ===== CHART 4: Complaints Trend Updates =====
-    document.getElementById('complaintsReduction').innerText = '-' + complaintsReduction + '%';
-    document.getElementById('complaintsRetentionRate').innerText = value + '%';
-    document.getElementById('complaintsFooter').innerHTML = 'avg complaints: 12-month projection';
-    
-    // Calculate Y positions for trend line
-    const maxComplaints = Math.max(complaints * 1.5, 5); // Dynamic max based on data
-    const minComplaints = 0;
-    
-    const startY = 8 + ((complaints - minComplaints) / (maxComplaints - minComplaints)) * 24;
-    const endY = 8 + ((projectedComplaints - minComplaints) / (maxComplaints - minComplaints)) * 24;
-    
-    // Update trend line
-    const pathData = `M0,${startY} C25,${startY-2} 50,${(startY+endY)/2} 75,${endY+1} 100,${endY}`;
-    document.getElementById('complaintsTrendLine').setAttribute('d', pathData);
-    
-    // Update gradient area
-    const areaPoints = `0,40 0,${startY} C25,${startY-2} 50,${(startY+endY)/2} 75,${endY+1} 100,${endY} 100,40`;
-    document.getElementById('gradientArea').setAttribute('points', areaPoints);
-    
-    // Update points
-    document.getElementById('currentComplaintPoint').setAttribute('cy', startY);
-    document.getElementById('projectedComplaintPoint').setAttribute('cy', endY);
-    
-    // Update marker texts
-    document.getElementById('currentComplaintLabel').innerHTML = `Current: ${complaints.toFixed(2)}`;
-    document.getElementById('projectedComplaintLabel').innerHTML = `Projected: ${projectedComplaints.toFixed(2)}`;
-
-    // ===== KPI Grid Updates =====
-    document.getElementById('membersSaved').innerText = savedMembers;
-    document.getElementById('revenueSaved').innerText = '$' + Math.round(revenueSaved).toLocaleString();
-    document.getElementById('highRiskMembers').innerText = highRisk;
-    document.getElementById('kpiAttendance').innerText = attendance.toFixed(1) + '%';
-    document.getElementById('kpiProjectedAttendance').innerText = projectedAttendance.toFixed(1) + '%';
-    document.getElementById('kpiAnnual').innerText = annual.toFixed(1) + '%';
-    document.getElementById('kpiProjectedAnnual').innerText = projectedAnnual.toFixed(1) + '%';
-}
-
-// Event listener for slider
-document.getElementById("retentionSlider").addEventListener("input", function(){
-    updateSimulation(this.value);
-});
-
-// Load data on page load
-loadBusinessImpact();
-</script>
-
-
-
+            document.getElementById('churnGradientBar').style.width = projectedPos + '%';
+            document.getElementById('currentChurnMarker').style.left = currentPos + '%';
+            document.getElementById('projectedChurnMarker').style.left = projectedPos + '%';
+            
+            document.getElementById('currentChurnLabel').innerHTML = churn.toFixed(1) + '%';
+            document.getElementById('projectedChurnLabel').innerHTML = projectedChurn.toFixed(1) + '%';
+            document.getElementById('churnFooter').innerHTML = (churn - projectedChurn).toFixed(1) + ' percentage point reduction';
+
+            // Revenue Ring
+            const circumference = 2 * Math.PI * 40;
+            const offset = circumference * (1 - value / 100);
+            document.getElementById('revenueRing').style.strokeDasharray = `${circumference} ${circumference}`;
+            document.getElementById('revenueRing').style.strokeDashoffset = offset;
+            document.getElementById('revenuePercent').innerText = value + '%';
+            document.getElementById('revenueIncrease').innerHTML = '+$' + Math.round(revenueSaved).toLocaleString();
+            document.getElementById('revenueFooter').innerHTML = `$${Math.round(highRisk * avgValue).toLocaleString()} → $${Math.round(revenueSaved).toLocaleString()}`;
+
+            // Engagement Bars
+            document.getElementById('currentAttendanceBar').style.width = attendance + '%';
+            document.getElementById('attendanceBar').style.width = projectedAttendance + '%';
+            document.getElementById('currentAnnualBar').style.width = annual + '%';
+            document.getElementById('annualBar').style.width = projectedAnnual + '%';
+            
+            document.getElementById('currentAttendance').innerText = attendance.toFixed(1) + '%';
+            document.getElementById('attendanceVal').innerText = projectedAttendance.toFixed(1) + '%';
+            document.getElementById('currentAnnual').innerText = annual.toFixed(1) + '%';
+            document.getElementById('annualVal').innerText = projectedAnnual.toFixed(1) + '%';
+            document.getElementById('engagementIncrease').innerText = '+' + avgEngagementIncrease + '%';
+
+            // Complaints Trend
+            document.getElementById('complaintsReduction').innerText = '-' + complaintsReduction + '%';
+            
+            const maxComplaints = Math.max(complaints * 1.5, 5);
+            const startY = 80 + ((complaints - 0) / (maxComplaints - 0)) * -60;
+            const endY = 80 + ((projectedComplaints - 0) / (maxComplaints - 0)) * -60;
+            
+            document.getElementById('trendLine').setAttribute('d', `M0,${startY} L300,${endY}`);
+            document.getElementById('trendArea').setAttribute('points', `0,100 0,${startY} 300,${endY} 300,100`);
+            document.getElementById('trendStart').setAttribute('cy', startY);
+            document.getElementById('trendEnd').setAttribute('cy', endY);
+            
+            document.getElementById('currentComplaintLabel').innerHTML = complaints.toFixed(2);
+            document.getElementById('projectedComplaintLabel').innerHTML = projectedComplaints.toFixed(2);
+
+            // Metrics
+            document.getElementById('membersSaved').innerText = savedMembers;
+            document.getElementById('membersSavedBottom').innerText = savedMembers;
+            document.getElementById('revenueSaved').innerText = '$' + Math.round(revenueSaved).toLocaleString();
+            document.getElementById('revenueSavedBottom').innerText = '$' + Math.round(revenueSaved).toLocaleString();
+            document.getElementById('highRiskMembers').innerText = highRisk;
+            
+            document.getElementById('kpiAttendance').innerText = attendance.toFixed(1) + '%';
+            document.getElementById('kpiProjectedAttendance').innerText = '→ ' + projectedAttendance.toFixed(1) + '%';
+            document.getElementById('kpiAnnual').innerText = annual.toFixed(1) + '%';
+            document.getElementById('kpiProjectedAnnual').innerText = '→ ' + projectedAnnual.toFixed(1) + '%';
+            
+            document.getElementById('attendanceBottom').innerText = attendance.toFixed(1) + '%';
+            document.getElementById('attendanceProjBottom').innerText = projectedAttendance.toFixed(1) + '%';
+            document.getElementById('annualBottom').innerText = annual.toFixed(1) + '%';
+            document.getElementById('annualProjBottom').innerText = projectedAnnual.toFixed(1) + '%';
+        }
+
+        document.getElementById("retentionSlider").addEventListener("input", function(){
+            updateSimulation(this.value);
+        });
+
+        loadBusinessImpact();
+    </script>
+</main>
 </body>
 </html>
