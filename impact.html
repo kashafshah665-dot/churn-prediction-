@@ -348,73 +348,68 @@
             margin-top: 0.5rem;
         }
 
-        /* Metrics Grid */
-        .metrics-grid {
+        /* KPI Row */
+        .kpi-row {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 1.5rem;
             margin-bottom: 2.5rem;
         }
 
-        .metric-tile {
+        .kpi-item {
             background: rgba(15, 20, 30, 0.6);
             border: 1px solid rgba(0, 255, 255, 0.1);
-            border-radius: 30px;
-            padding: 1.8rem;
+            border-radius: 20px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
         }
 
-        .metric-tile::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.05), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.5s;
-        }
-
-        .metric-tile:hover::after {
-            transform: translateX(100%);
-        }
-
-        .metric-tile:hover {
+        .kpi-item:hover {
             border-color: rgba(0, 255, 255, 0.3);
             transform: translateY(-5px);
         }
 
-        .metric-icon {
-            font-size: 1.5rem;
-            color: #00ffff;
-            margin-bottom: 1.2rem;
-        }
-
-        .metric-label {
+        .kpi-info h4 {
             color: #9ca3af;
             font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
         }
 
-        .metric-number {
-            font-size: 2.2rem;
+        .kpi-info span {
+            font-size: 1.3rem;
             font-weight: 700;
-            line-height: 1;
-            margin-bottom: 0.5rem;
-            color: #fff;
         }
 
-        .metric-trend {
+        .kpi-current {
+            color: #ef4444;
+        }
+
+        .kpi-arrow {
+            color: #00ffff;
+            margin: 0 0.5rem;
+            font-size: 1rem;
+        }
+
+        .kpi-projected {
+            color: #00ffff;
+        }
+
+        .kpi-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 14px;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 0.8rem;
-            color: #4ade80;
+            justify-content: center;
+            color: #00ffff;
+            font-size: 1.3rem;
         }
 
         /* Charts Grid */
@@ -422,7 +417,6 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 1.5rem;
-            margin-bottom: 2.5rem;
         }
 
         .chart-tile {
@@ -468,16 +462,87 @@
             font-weight: 500;
         }
 
+        /* Dumbbell Chart Styles */
+        .dumbbell-container {
+            position: relative;
+            height: 80px;
+            margin: 2rem 0 1rem;
+        }
+
+        .dumbbell-track {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #ef4444, #00ffff);
+            border-radius: 2px;
+            transform: translateY(-50%);
+        }
+
+        .dumbbell-dot {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            transition: left 0.3s ease;
+            z-index: 2;
+        }
+
+        .dumbbell-dot.current {
+            background: #ef4444;
+            box-shadow: 0 0 20px #ef4444;
+        }
+
+        .dumbbell-dot.projected {
+            background: #00ffff;
+            box-shadow: 0 0 20px #00ffff;
+        }
+
+        .dumbbell-line {
+            position: absolute;
+            top: 50%;
+            height: 3px;
+            background: linear-gradient(90deg, #ef4444, #00ffff);
+            transform: translateY(-50%);
+            transition: left 0.3s ease, width 0.3s ease;
+            z-index: 1;
+        }
+
+        .dumbbell-label {
+            position: absolute;
+            top: -25px;
+            transform: translateX(-50%);
+            background: rgba(15, 20, 30, 0.9);
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dumbbell-label.current {
+            color: #ef4444;
+        }
+
+        .dumbbell-label.projected {
+            color: #00ffff;
+        }
+
         /* Progress Ring */
         .ring-container {
             display: flex;
             justify-content: center;
             margin: 1.5rem 0;
+            position: relative;
         }
 
         .ring-svg {
             width: 140px;
             height: 140px;
+            transform: rotate(-90deg);
         }
 
         .ring-bg {
@@ -492,15 +557,19 @@
             fill: none;
             stroke-linecap: round;
             filter: drop-shadow(0 0 15px #00ffff);
-            transition: stroke-dasharray 0.3s;
+            transition: stroke-dasharray 0.3s, stroke-dashoffset 0.3s;
+            stroke-dasharray: 251.2;
         }
 
         .ring-text {
-            fill: #00ffff;
-            font-size: 1.5rem;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8rem;
             font-weight: 700;
-            text-anchor: middle;
-            dominant-baseline: middle;
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff;
         }
 
         /* Dual Bars */
@@ -601,73 +670,34 @@
             fill: #ef4444;
         }
 
-        /* KPI Row */
-        .kpi-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .kpi-item {
-            background: rgba(15, 20, 30, 0.6);
-            border: 1px solid rgba(0, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 1.5rem;
+        /* Compact value display */
+        .value-compact {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-        }
-
-        .kpi-info h4 {
-            color: #9ca3af;
-            font-size: 0.8rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .kpi-info span {
+            gap: 0.5rem;
             font-size: 1.3rem;
             font-weight: 700;
         }
 
-        .kpi-current {
+        .value-current {
             color: #ef4444;
         }
 
-        .kpi-arrow {
+        .value-arrow {
             color: #00ffff;
-            margin: 0 0.5rem;
             font-size: 1rem;
         }
 
-        .kpi-projected {
+        .value-projected {
             color: #00ffff;
-        }
-
-        .kpi-icon {
-            width: 45px;
-            height: 45px;
-            background: rgba(0, 255, 255, 0.1);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #00ffff;
-            font-size: 1.3rem;
         }
 
         @media (max-width: 1400px) {
-            .metrics-grid {
+            .kpi-row {
                 grid-template-columns: repeat(2, 1fr);
             }
             .charts-grid {
                 grid-template-columns: 1fr;
-            }
-            .kpi-row {
-                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
@@ -748,37 +778,49 @@
             </div>
         </div>
 
-        <!-- Quick Metrics -->
-        <div class="metrics-grid">
-            <div class="metric-tile">
-                <div class="metric-icon"><i class="fas fa-users"></i></div>
-                <div class="metric-label">Members Saved</div>
-                <div class="metric-number" id="membersSaved">0</div>
-                <div class="metric-trend" id="revenueSaved">$0 retained</div>
+        <!-- KPI Row -->
+        <div class="kpi-row">
+            <div class="kpi-item">
+                <div class="kpi-info">
+                    <h4>Members Saved</h4>
+                    <span class="kpi-current" id="membersSavedBottom">0</span>
+                </div>
+                <div class="kpi-icon"><i class="fas fa-user-check"></i></div>
             </div>
-            <div class="metric-tile">
-                <div class="metric-icon"><i class="fas fa-exclamation-triangle"></i></div>
-                <div class="metric-label">High Risk</div>
-                <div class="metric-number" id="highRiskMembers">0</div>
-                <div class="metric-trend">needs attention</div>
+            <div class="kpi-item">
+                <div class="kpi-info">
+                    <h4>Revenue</h4>
+                    <span class="kpi-current" id="revenueSavedBottom">$0</span>
+                </div>
+                <div class="kpi-icon"><i class="fas fa-dollar-sign"></i></div>
             </div>
-            <div class="metric-tile">
-                <div class="metric-icon"><i class="fas fa-calendar-check"></i></div>
-                <div class="metric-label">Attendance</div>
-                <div class="metric-number" id="kpiAttendance">0%</div>
-                <div class="metric-trend" id="kpiProjectedAttendance">→ 0%</div>
+            <div class="kpi-item">
+                <div class="kpi-info">
+                    <h4>Attendance</h4>
+                    <div class="value-compact">
+                        <span class="value-current" id="attendanceCurrent">0%</span>
+                        <span class="value-arrow">→</span>
+                        <span class="value-projected" id="attendanceProjected">0%</span>
+                    </div>
+                </div>
+                <div class="kpi-icon"><i class="fas fa-calendar"></i></div>
             </div>
-            <div class="metric-tile">
-                 <div class="metric-icon"><i class="fas fa-users"></i></div>
-                <div class="metric-label">Annual Members</div>
-                <div class="metric-number" id="kpiAnnual">0%</div>
-                <div class="metric-trend" id="kpiProjectedAnnual">→ 0%</div>
+            <div class="kpi-item">
+                <div class="kpi-info">
+                    <h4>Annual</h4>
+                    <div class="value-compact">
+                        <span class="value-current" id="annualCurrent">0%</span>
+                        <span class="value-arrow">→</span>
+                        <span class="value-projected" id="annualProjected">0%</span>
+                    </div>
+                </div>
+                <div class="kpi-icon"><i class="fas fa-users"></i></div>
             </div>
         </div>
 
         <!-- Charts Grid -->
         <div class="charts-grid">
-            <!-- Chart 1: Churn Reduction -->
+            <!-- Chart 1: Churn Reduction (Dumbbell Style) -->
             <div class="chart-tile">
                 <div class="chart-head">
                     <h3><i class="fas fa-chart-line"></i> Churn Reduction</h3>
@@ -796,23 +838,22 @@
                     </div>
                 </div>
 
-                <div style="position: relative; height: 60px; margin: 1rem 0;">
-                    <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 30px; background: #1f2937; border-radius: 20px;"></div>
-                    <div class="bar-projected" style="height: 30px; border-radius: 20px; width: 0%; bottom: 0; position: absolute;" id="churnGradientBar"></div>
-                    <div style="position: absolute; bottom: 35px; left: 0%; transform: translateX(-50%);" id="currentChurnMarker">
-                        <div style="width: 12px; height: 12px; background: #ef4444; border-radius: 50%; box-shadow: 0 0 20px #ef4444; margin-bottom: 5px;"></div>
-                        <div style="background: #1f2937; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.7rem; white-space: nowrap; color: #fff;" id="currentChurnLabel">0%</div>
+                <!-- Dumbbell Chart -->
+                <div class="dumbbell-container" id="dumbbellContainer">
+                    <div class="dumbbell-track"></div>
+                    <div class="dumbbell-line" id="dumbbellLine"></div>
+                    <div class="dumbbell-dot current" id="currentDot">
+                        <span class="dumbbell-label current" id="currentDotLabel">0%</span>
                     </div>
-                    <div style="position: absolute; bottom: 35px; left: 0%; transform: translateX(-50%);" id="projectedChurnMarker">
-                        <div style="width: 12px; height: 12px; background: #00ffff; border-radius: 50%; box-shadow: 0 0 20px #00ffff; margin-bottom: 5px;"></div>
-                        <div style="background: #1f2937; padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.7rem; white-space: nowrap; color: #fff;" id="projectedChurnLabel">0%</div>
+                    <div class="dumbbell-dot projected" id="projectedDot">
+                        <span class="dumbbell-label projected" id="projectedDotLabel">0%</span>
                     </div>
                 </div>
 
                 <div style="text-align: center; color: #9ca3af; font-size: 0.8rem;" id="churnFooter">0 percentage point reduction</div>
             </div>
 
-            <!-- Chart 2: Revenue Ring -->
+            <!-- Chart 2: Revenue Ring (Fixed) -->
             <div class="chart-tile">
                 <div class="chart-head">
                     <h3><i class="fas fa-coins"></i> Revenue Impact</h3>
@@ -822,12 +863,12 @@
                 <div class="ring-container">
                     <svg viewBox="0 0 100 100" class="ring-svg">
                         <circle cx="50" cy="50" r="40" class="ring-bg" />
-                        <circle cx="50" cy="50" r="40" class="ring-progress" id="revenueRing" stroke-dasharray="0 251.2" transform="rotate(-90 50 50)" />
-                        <text x="50" y="55" class="ring-text" id="revenuePercent">0%</text>
+                        <circle cx="50" cy="50" r="40" class="ring-progress" id="revenueRing" stroke-dashoffset="251.2" />
                     </svg>
+                    <div class="ring-text" id="revenuePercent">0%</div>
                 </div>
 
-                <div style="text-align: center; color: #9ca3af; font-size: 0.8rem;" id="revenueFooter">$0 → $0 retained</div>
+                <div style="text-align: center; color: #9ca3af; font-size: 0.8rem;" id="revenueFooter">$0 max → $0 retained</div>
             </div>
 
             <!-- Chart 3: Engagement Bars -->
@@ -901,42 +942,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Bottom KPI Row -->
-        <div class="kpi-row">
-            <div class="kpi-item">
-                <div class="kpi-info">
-                    <h4>Members Saved</h4>
-                    <span class="kpi-current" id="membersSavedBottom">0</span>
-                </div>
-                <div class="kpi-icon"><i class="fas fa-user-check"></i></div>
-            </div>
-            <div class="kpi-item">
-                <div class="kpi-info">
-                    <h4>Revenue</h4>
-                    <span class="kpi-current" id="revenueSavedBottom">$0</span>
-                </div>
-                <div class="kpi-icon"><i class="fas fa-dollar-sign"></i></div>
-            </div>
-            <div class="kpi-item">
-                <div class="kpi-info">
-                    <h4>Attendance</h4>
-                    <span class="kpi-current" id="attendanceBottom">0%</span>
-                    <span class="kpi-arrow">→</span>
-                    <span class="kpi-projected" id="attendanceProjBottom">0%</span>
-                </div>
-                <div class="kpi-icon"><i class="fas fa-calendar"></i></div>
-            </div>
-            <div class="kpi-item">
-                <div class="kpi-info">
-                    <h4>Annual</h4>
-                    <span class="kpi-current" id="annualBottom">0%</span>
-                    <span class="kpi-arrow">→</span>
-                    <span class="kpi-projected" id="annualProjBottom">0%</span>
-                </div>
-                
-            </div>
-        </div>
     </div>
 
     <script>
@@ -982,6 +987,8 @@
 
             const savedMembers = Math.round(highRisk * factor);
             const revenueSaved = savedMembers * avgValue;
+            const maximumPossibleRevenue = highRisk * avgValue;
+            const revenuePercent = maximumPossibleRevenue > 0 ? (revenueSaved / maximumPossibleRevenue) * 100 : 0;
 
             const churnImprovement = ((churn - projectedChurn) / churn * 100).toFixed(1);
             const complaintsReduction = ((complaints - projectedComplaints) / complaints * 100).toFixed(0);
@@ -991,7 +998,7 @@
             document.getElementById("sliderValue").innerText = value + "%";
             document.getElementById("sliderPercent").innerText = value + "%";
 
-            // Churn Chart
+            // Dumbbell Chart (Churn)
             document.getElementById("currentChurn").innerText = churn.toFixed(1) + "%";
             document.getElementById("projectedChurn").innerText = projectedChurn.toFixed(1) + "%";
             document.getElementById("churnImprovement").innerText = "-" + churnImprovement + "%";
@@ -1000,22 +1007,26 @@
             const currentPos = Math.min((churn / maxChurn) * 100, 100);
             const projectedPos = Math.min((projectedChurn / maxChurn) * 100, 100);
             
-            document.getElementById('churnGradientBar').style.width = projectedPos + '%';
-            document.getElementById('currentChurnMarker').style.left = currentPos + '%';
-            document.getElementById('projectedChurnMarker').style.left = projectedPos + '%';
+            document.getElementById('currentDot').style.left = currentPos + '%';
+            document.getElementById('projectedDot').style.left = projectedPos + '%';
             
-            document.getElementById('currentChurnLabel').innerHTML = churn.toFixed(1) + '%';
-            document.getElementById('projectedChurnLabel').innerHTML = projectedChurn.toFixed(1) + '%';
+            const line = document.getElementById('dumbbellLine');
+            const leftPos = Math.min(currentPos, projectedPos);
+            const width = Math.abs(projectedPos - currentPos);
+            line.style.left = leftPos + '%';
+            line.style.width = width + '%';
+            
+            document.getElementById('currentDotLabel').innerHTML = churn.toFixed(1) + '%';
+            document.getElementById('projectedDotLabel').innerHTML = projectedChurn.toFixed(1) + '%';
             document.getElementById('churnFooter').innerHTML = (churn - projectedChurn).toFixed(1) + ' percentage point reduction';
 
-            // Revenue Ring
-            const circumference = 2 * Math.PI * 40;
-            const offset = circumference * (1 - value / 100);
-            document.getElementById('revenueRing').style.strokeDasharray = `${circumference} ${circumference}`;
+            // Revenue Ring - FIXED CALCULATION
+            const circumference = 2 * Math.PI * 40; // 251.2
+            const offset = circumference * (1 - revenuePercent / 100);
             document.getElementById('revenueRing').style.strokeDashoffset = offset;
-            document.getElementById('revenuePercent').innerText = value + '%';
-            document.getElementById('revenueIncrease').innerHTML = '+$' + Math.round(revenueSaved).toLocaleString();
-            document.getElementById('revenueFooter').innerHTML = `$${Math.round(highRisk * avgValue).toLocaleString()} → $${Math.round(revenueSaved).toLocaleString()}`;
+            document.getElementById('revenuePercent').innerText = Math.round(revenuePercent) + '%';
+            document.getElementById('revenueIncrease').innerHTML = '+$' + Math.round(revenueSaved).toLocaleString('en-IN');
+            document.getElementById('revenueFooter').innerHTML = `$${Math.round(maximumPossibleRevenue).toLocaleString('en-IN')} max → $${Math.round(revenueSaved).toLocaleString('en-IN')} retained`;
 
             // Engagement Bars
             document.getElementById('currentAttendanceBar').style.width = attendance + '%';
@@ -1044,26 +1055,25 @@
             document.getElementById('currentComplaintLabel').innerHTML = complaints.toFixed(2);
             document.getElementById('projectedComplaintLabel').innerHTML = projectedComplaints.toFixed(2);
 
-            // Metrics
-            document.getElementById('membersSaved').innerText = savedMembers;
+            // KPI Row - UPDATED with compact format
             document.getElementById('membersSavedBottom').innerText = savedMembers;
-            document.getElementById('revenueSaved').innerText = '$' + Math.round(revenueSaved).toLocaleString();
-            document.getElementById('revenueSavedBottom').innerText = '$' + Math.round(revenueSaved).toLocaleString();
-            document.getElementById('highRiskMembers').innerText = highRisk;
+            document.getElementById('revenueSavedBottom').innerText = '$' + Math.round(revenueSaved).toLocaleString('en-IN');
             
-            document.getElementById('kpiAttendance').innerText = attendance.toFixed(1) + '%';
-            document.getElementById('kpiProjectedAttendance').innerText = '→ ' + projectedAttendance.toFixed(1) + '%';
-            document.getElementById('kpiAnnual').innerText = annual.toFixed(1) + '%';
-            document.getElementById('kpiProjectedAnnual').innerText = '→ ' + projectedAnnual.toFixed(1) + '%';
-            
-            document.getElementById('attendanceBottom').innerText = attendance.toFixed(1) + '%';
-            document.getElementById('attendanceProjBottom').innerText = projectedAttendance.toFixed(1) + '%';
-            document.getElementById('annualBottom').innerText = annual.toFixed(1) + '%';
-            document.getElementById('annualProjBottom').innerText = projectedAnnual.toFixed(1) + '%';
+            // Attendance and Annual in compact format (one line with arrow)
+            document.getElementById('attendanceCurrent').innerText = attendance.toFixed(1) + '%';
+            document.getElementById('attendanceProjected').innerText = projectedAttendance.toFixed(1) + '%';
+            document.getElementById('annualCurrent').innerText = annual.toFixed(1) + '%';
+            document.getElementById('annualProjected').innerText = projectedAnnual.toFixed(1) + '%';
         }
 
         document.getElementById("retentionSlider").addEventListener("input", function(){
             updateSimulation(this.value);
+        });
+
+        // Initial update to set correct ring dasharray
+        window.addEventListener('load', function() {
+            const circumference = 2 * Math.PI * 40;
+            document.getElementById('revenueRing').style.strokeDasharray = circumference;
         });
 
         loadBusinessImpact();
