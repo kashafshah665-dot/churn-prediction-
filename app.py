@@ -1,8 +1,14 @@
 from flask import Flask, request, jsonify, render_template
 import pandas as pd
 from model_loader import load_model
+import os
+from sklearn.model_selection import train_test_split
 
-app = Flask(__name__)
+# Get the absolute path of the current directory
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+app = Flask(__name__, 
+            template_folder=os.path.join(BASE_DIR, 'templates'))  # Changed from '.'
 
 # =========================
 # CONFIGURABLE THRESHOLDS
@@ -13,12 +19,16 @@ HIGH_RISK_THRESHOLD = 0.48
 # =========================
 # LOAD MODEL
 # =========================
-model, scaler = load_model()
+print("Loading model and scaler...")
+model, scaler = load_model()  # Make sure your model_loader.py returns (model, scaler)
+print("Model loaded successfully!")
 
 # =========================
 # LOAD DATA
 # =========================
-df = pd.read_csv("gym_membership_renewal.csv")
+csv_path = os.path.join(BASE_DIR, "gym_membership_renewal.csv")
+df = pd.read_csv(csv_path)
+print(f"Data loaded: {len(df)} records")
 
 # =========================
 # PREPROCESS ENTIRE DATASET
@@ -79,8 +89,6 @@ df["suggested_action"] = df.apply(generate_suggestion, axis=1)
 # =========================
 # MODEL EVALUATION (TEST SPLIT)
 # =========================
-
-from sklearn.model_selection import train_test_split
 
 y = df["renewed_membership"]
 X = df[feature_columns]
@@ -215,6 +223,7 @@ def high_risk_members():
     ]].to_dict(orient="records")
 
     return jsonify(result)
+
 @app.route("/api/suggestions-metrics")
 def suggestions_metrics():
     total_members = len(df)
@@ -286,6 +295,7 @@ def execution_roadmap():
 
     return jsonify(roadmap)
 
+
 @app.route("/api/business-impact")
 def business_impact():
 
@@ -318,7 +328,7 @@ def business_impact():
         "avg_member_value": avg_member_value
     })
 
-
+    
 
 @app.route("/impact")
 def impact():
@@ -327,8 +337,9 @@ def impact():
 
 
 # =========================
-
+# IMPORTANT: This is required for Render
 if __name__ == "__main__":
-    app.run(debug=True)
-
-
+    # Get port from environment variable (Render sets this automatically)
+    port = int(os.environ.get('PORT', 5000))
+    # Bind to 0.0.0.0 to accept external connections
+    app.run(host='0.0.0.0', port=port, debug=False)  # debug=False for production
