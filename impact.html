@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impact • GymFlow Enterprise</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #03050a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        /* Cyber Grid Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 50%, rgba(0, 255, 255, 0.05), transparent 50%);
+            z-index: -1;
+        }
+
+        /* Sidebar - Glass Dark */
+        .sidebar {
+            width: 300px;
+            background: rgba(5, 8, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(0, 255, 255, 0.1);
+            padding: 2.5rem 1.8rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 2;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.03), transparent);
+            pointer-events: none;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .logo-icon {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #03050a;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            animation: glowPulse 3s infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(0, 255, 255, 0.5); }
+            50% { box-shadow: 0 0 50px rgba(255, 0, 255, 0.5); }
+        }
+
+        .logo-text h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            line-height: 1.3;
+            background: linear-gradient(135deg, #fff, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.3px;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex: 1;
+        }
+
+        .nav-item {
+            padding: 1rem 1.2rem;
+            border-radius: 16px;
+            color: #9ca3af;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            font-weight: 500;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-item:hover::before {
+            left: 100%;
+        }
+
+        .nav-item:hover {
+            color: #00ffff;
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 255, 255, 0.1);
+            color: #00ffff;
+            border-left: 3px solid #00ffff;
+        }
+
+        .nav-item i {
+            width: 24px;
+            font-size: 1.2rem;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            padding: 2.5rem;
+            overflow-y: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .page-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-left p {
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .header-left p i {
+            color: #00ffff;
+        }
+
+        .live-badge {
+            background: rgba(239, 68, 68, 0.1);
+            padding: 0.6rem 1.5rem;
+            border-radius: 40px;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #f87171;
+            font-weight: 500;
+        }
+
+        .pulse {
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        /* Main Simulator Card */
+        .simulator {
+            background: rgba(8, 12, 22, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            border-radius: 40px;
+            padding: 2.5rem;
+            box-shadow: 0 30px 60px -20px rgba(0, 255, 255, 0.2);
+        }
+
+        .simulator-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .simulator-top h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #fff;
+        }
+
+        .simulator-top h2 i {
+            color: #00ffff;
+        }
+
+        .success-circle {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.5);
+        }
+
+        .success-circle span:first-child {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+            color: #03050a;
+        }
+
+        .success-circle span:last-child {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            color: #03050a;
+            font-weight: 500;
+        }
+
+        /* Slider */
+        .slider-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .slider-header label {
+            color: #9ca3af;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .slider-value {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: #00ffff;
+            font-weight: 600;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, #ef4444, #fbbf24, #00ffff);
+            border-radius: 20px;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 30px #00ffff;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            color: #6b7280;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        /* KPI Row */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .kpi-item {
+            background: rgba(15, 20, 30, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .kpi-item:hover {
+            border-color: rgba(0, 255, 255, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .kpi-info h4 {
+            color: #9ca3af;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .kpi-info span {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .kpi-current {
+            color: #ef4444;
+        }
+
+        .kpi-arrow {
+            color: #00ffff;
+            margin: 0 0.5rem;
+            font-size: 1rem;
+        }
+
+        .kpi-projected {
+            color: #00ffff;
+        }
+
+        .kpi-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00ffff;
+            font-size: 1.3rem;
+        }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .chart-tile {
+            background: rgba(15, 20, 30, 0.6);
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 1.8rem;
+            transition: all 0.3s;
+        }
+
+        .chart-tile:hover {
+            border-color: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 20px 40px -20px rgba(0, 255, 255, 0.2);
+        }
+
+        .chart-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-head h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #fff;
+        }
+
+        .chart-head h3 i {
+            color: #00ffff;
+        }
+
+        .chart-badge {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: #00ffff;
+            font-weight: 500;
+        }
+
+        /* Dumbbell Chart Styles */
+        .dumbbell-container {
+            position: relative;
+            height: 80px;
+            margin: 2rem 0 1rem;
+        }
+
+        .dumbbell-track {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #ef4444, #00ffff);
+            border-radius: 2px;
+            transform: translateY(-50%);
+        }
+
+        .dumbbell-dot {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            transition: left 0.3s ease;
+            z-index: 2;
+        }
+
+        .dumbbell-dot.current {
+            background: #ef4444;
+            box-shadow: 0 0 20px #ef4444;
+        }
+
+        .dumbbell-dot.projected {
+            background: #00ffff;
+            box-shadow: 0 0 20px #00ffff;
+        }
+
+        .dumbbell-line {
+            position: absolute;
+            top: 50%;
+            height: 3px;
+            background: linear-gradient(90deg, #ef4444, #00ffff);
+            transform: translateY(-50%);
+            transition: left 0.3s ease, width 0.3s ease;
+            z-index: 1;
+        }
+
+        .dumbbell-label {
+            position: absolute;
+            top: -25px;
+            transform: translateX(-50%);
+            background: rgba(15, 20, 30, 0.9);
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dumbbell-label.current {
+            color: #ef4444;
+        }
+
+        .dumbbell-label.projected {
+            color: #00ffff;
+        }
+
+        /* Progress Ring */
+        .ring-container {
+            display: flex;
+            justify-content: center;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .ring-svg {
+            width: 140px;
+            height: 140px;
+            transform: rotate(-90deg);
+        }
+
+        .ring-bg {
+            stroke: #1f2937;
+            stroke-width: 8;
+            fill: none;
+        }
+
+        .ring-progress {
+            stroke: #00ffff;
+            stroke-width: 8;
+            fill: none;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 15px #00ffff);
+            transition: stroke-dasharray 0.3s, stroke-dashoffset 0.3s;
+            stroke-dasharray: 251.2;
+        }
+
+        .ring-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff;
+        }
+
+        /* Dual Bars */
+        .dual-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .bar-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .bar-header {
+            display: flex;
+            justify-content: space-between;
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        .bar-track {
+            height: 30px;
+            background: #1f2937;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bar-current {
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #ef4444;
+            opacity: 0.5;
+            z-index: 1;
+            transition: width 0.3s;
+        }
+
+        .bar-projected {
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(90deg, #00ffff, #ff00ff);
+            z-index: 2;
+            transition: width 0.3s;
+        }
+
+        .bar-values {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .bar-current-value {
+            color: #ef4444;
+            font-weight: 500;
+        }
+
+        .bar-projected-value {
+            color: #00ffff;
+            font-weight: 600;
+        }
+
+        /* Trend Chart */
+        .trend-container {
+            height: 180px;
+            position: relative;
+            margin: 1.5rem 0;
+        }
+
+        .trend-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .trend-line {
+            stroke: url(#trendGradient);
+            stroke-width: 3;
+            fill: none;
+            filter: drop-shadow(0 0 15px #00ffff);
+        }
+
+        .trend-area {
+            fill: url(#areaGradient);
+            opacity: 0.2;
+        }
+
+        .trend-point {
+            fill: #00ffff;
+            filter: drop-shadow(0 0 10px #00ffff);
+        }
+
+        .trend-point-start {
+            fill: #ef4444;
+        }
+
+        /* Compact value display */
+        .value-compact {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .value-current {
+            color: #ef4444;
+        }
+
+        .value-arrow {
+            color: #00ffff;
+            font-size: 1rem;
+        }
+
+        .value-projected {
+            color: #00ffff;
+        }
+
+        @media (max-width: 1400px) {
+            .kpi-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="logo">
+        <div class="logo-icon">
+            <i class="fas fa-dumbbell"></i>
+        </div>
+        <div class="logo-text">
+            <h1>Gym Customer<br>Churn Prediction</h1>
+        </div>
+    </div>
+
+    <nav class="nav">
+        <div class="nav-item" onclick="window.location.href='/dashboard'">
+            <i class="fas fa-chart-pie"></i> Dashboard
+        </div>
+        <div class="nav-item" onclick="window.location.href='/prediction'">
+            <i class="fas fa-brain"></i> Prediction
+        </div>
+        <div class="nav-item" onclick="window.location.href='/suggestions'">
+            <i class="fas fa-lightbulb"></i> Insights
+        </div>
+        <div class="nav-item active" onclick="window.location.href='/impact'">
+            <i class="fas fa-chart-line"></i> Impact
+        </div>
+    </nav>
+</aside>
+
+<!-- Main Content -->
+<main class="main">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="header-left">
+            <h1>BUSINESS IMPACT</h1>
+            <p>
+                <i class="fas fa-circle"></i>
+                Real-time simulation • Drag to adjust
+            </p>
+        </div>
+        <div class="live-badge">
+            <span class="pulse"></span>
+            <span>LIVE SIMULATION</span>
+        </div>
+    </div>
+
+    <!-- Main Simulator -->
+    <div class="simulator">
+        <!-- Top Bar -->
+        <div class="simulator-top">
+            <h2>
+                <i class="fas fa-sliders-h"></i>
+                Success Simulator
+            </h2>
+            <div class="success-circle">
+                <span id="sliderValue">40%</span>
+                <span>active</span>
+            </div>
+        </div>
+
+        <!-- Slider -->
+        <div class="slider-section">
+            <div class="slider-header">
+                <label>Retention Success Rate</label>
+                <span class="slider-value" id="sliderPercent">40%</span>
+            </div>
+            <input type="range" min="0" max="100" value="40" class="slider" id="retentionSlider">
+            <div class="slider-labels">
+                <span>0%</span>
+                <span>25%</span>
+                <span>50%</span>
+                <span>75%</span>
+                <span>100%</span>
+            </div>
+        </div>
+
+        <!-- KPI Row -->
+        <div class="kpi-row">
+            <div class="kpi-item">
+                <div class="kpi-info">
+                    <h4>Members Saved</h4>
+                    <span class="kpi-current" id="membersSavedBottom">0</span>
+                </div>
+                <div class="kpi-icon"><i class="fas fa-user-check"></i></div>
+            </div>
+            <div class="kpi-item">
+                <div class="kpi-info">
+                    <h4>Revenue</h4>
+                    <span class="kpi-current" id="revenueSavedBottom">$0</span>
+                </div>
+                <div class="kpi-icon"><i class="fas fa-dollar-sign"></i></div>
+            </div>
+            <div class="kpi-item">
+                <div class="kpi-info">
+                    <h4>Attendance</h4>
+                    <div class="value-compact">
+                        <span class="value-current" id="attendanceCurrent">0%</span>
+                        <span class="value-arrow">→</span>
+                        <span class="value-projected" id="attendanceProjected">0%</span>
+                    </div>
+                </div>
+                <div class="kpi-icon"><i class="fas fa-calendar"></i></div>
+            </div>
+            <div class="kpi-item">
+                <div class="kpi-info">
+                    <h4>Annual</h4>
+                    <div class="value-compact">
+                        <span class="value-current" id="annualCurrent">0%</span>
+                        <span class="value-arrow">→</span>
+                        <span class="value-projected" id="annualProjected">0%</span>
+                    </div>
+                </div>
+                <div class="kpi-icon"><i class="fas fa-users"></i></div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- Chart 1: Churn Reduction (Dumbbell Style) -->
+            <div class="chart-tile">
+                <div class="chart-head">
+                    <h3><i class="fas fa-chart-line"></i> Churn Reduction</h3>
+                    <span class="chart-badge" id="churnImprovement">-0%</span>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
+                    <div>
+                        <div style="color: #9ca3af; font-size: 0.7rem; margin-bottom: 0.3rem;">Current</div>
+                        <div style="color: #ef4444; font-size: 2rem; font-weight: 700;" id="currentChurn">0%</div>
+                    </div>
+                    <div>
+                        <div style="color: #9ca3af; font-size: 0.7rem; margin-bottom: 0.3rem;">Projected</div>
+                        <div style="color: #00ffff; font-size: 2rem; font-weight: 700;" id="projectedChurn">0%</div>
+                    </div>
+                </div>
+
+                <!-- Dumbbell Chart -->
+                <div class="dumbbell-container" id="dumbbellContainer">
+                    <div class="dumbbell-track"></div>
+                    <div class="dumbbell-line" id="dumbbellLine"></div>
+                    <div class="dumbbell-dot current" id="currentDot">
+                        <span class="dumbbell-label current" id="currentDotLabel">0%</span>
+                    </div>
+                    <div class="dumbbell-dot projected" id="projectedDot">
+                        <span class="dumbbell-label projected" id="projectedDotLabel">0%</span>
+                    </div>
+                </div>
+
+                <div style="text-align: center; color: #9ca3af; font-size: 0.8rem;" id="churnFooter">0 percentage point reduction</div>
+            </div>
+
+            <!-- Chart 2: Revenue Ring (Fixed) -->
+            <div class="chart-tile">
+                <div class="chart-head">
+                    <h3><i class="fas fa-coins"></i> Revenue Impact</h3>
+                    <span class="chart-badge" id="revenueIncrease">+$0</span>
+                </div>
+                
+                <div class="ring-container">
+                    <svg viewBox="0 0 100 100" class="ring-svg">
+                        <circle cx="50" cy="50" r="40" class="ring-bg" />
+                        <circle cx="50" cy="50" r="40" class="ring-progress" id="revenueRing" stroke-dashoffset="251.2" />
+                    </svg>
+                    <div class="ring-text" id="revenuePercent">0%</div>
+                </div>
+
+                <div style="text-align: center; color: #9ca3af; font-size: 0.8rem;" id="revenueFooter">$0 max → $0 retained</div>
+            </div>
+
+            <!-- Chart 3: Engagement Bars -->
+            <div class="chart-tile">
+                <div class="chart-head">
+                    <h3><i class="fas fa-users"></i> Engagement Growth</h3>
+                    <span class="chart-badge" id="engagementIncrease">+0%</span>
+                </div>
+                
+                <div class="dual-bars">
+                    <div class="bar-item">
+                        <div class="bar-header">
+                            <span>Class Attendance</span>
+                            <span><span class="bar-current-value" id="currentAttendance">0%</span> → <span class="bar-projected-value" id="attendanceVal">0%</span></span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-current" id="currentAttendanceBar" style="width: 0%;"></div>
+                            <div class="bar-projected" id="attendanceBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    <div class="bar-item">
+                        <div class="bar-header">
+                            <span>Annual Members</span>
+                            <span><span class="bar-current-value" id="currentAnnual">0%</span> → <span class="bar-projected-value" id="annualVal">0%</span></span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-current" id="currentAnnualBar" style="width: 0%;"></div>
+                            <div class="bar-projected" id="annualBar" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart 4: Complaints Trend -->
+            <div class="chart-tile">
+                <div class="chart-head">
+                    <h3><i class="fas fa-exclamation-circle"></i> Complaints Trend</h3>
+                    <span class="chart-badge" id="complaintsReduction">-0%</span>
+                </div>
+                
+                <div class="trend-container">
+                    <svg viewBox="0 0 300 100" class="trend-svg" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="trendGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#ef4444" />
+                                <stop offset="100%" stop-color="#00ffff" />
+                            </linearGradient>
+                            <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#00ffff" stop-opacity="0.3" />
+                                <stop offset="100%" stop-color="#00ffff" stop-opacity="0" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <polygon class="trend-area" id="trendArea" points="0,100 0,80 300,20 300,100" />
+                        <path class="trend-line" id="trendLine" d="M0,80 L300,20" />
+                        
+                        <circle class="trend-point-start" cx="0" cy="80" r="5" id="trendStart" />
+                        <circle class="trend-point" cx="300" cy="20" r="5" id="trendEnd" />
+                    </svg>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
+                    <div>
+                        <div style="color: #9ca3af; font-size: 0.7rem; margin-bottom: 0.3rem;">Current</div>
+                        <div style="color: #ef4444; font-weight: 600;" id="currentComplaintLabel">0</div>
+                    </div>
+                    <div>
+                        <div style="color: #9ca3af; font-size: 0.7rem; margin-bottom: 0.3rem;">Projected</div>
+                        <div style="color: #00ffff; font-weight: 600;" id="projectedComplaintLabel">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let baseData = null;
+
+        async function loadBusinessImpact(){
+            try {
+                const res = await fetch('/api/business-impact');
+                baseData = await res.json();
+                baseData.current_churn_rate *= 100;
+                updateSimulation(40);
+            } catch(err){
+                console.error(err);
+                // Fallback data for preview
+                baseData = {
+                    current_churn_rate: 38.16,
+                    class_attendance_rate: 42.3,
+                    annual_membership_ratio: 31.5,
+                    avg_complaints: 3.2,
+                    high_risk_members: 2009,
+                    avg_member_value: 1000
+                };
+                updateSimulation(40);
+            }
+        }
+
+        function updateSimulation(value){
+            if(!baseData) return;
+
+            const factor = value / 100;
+
+            const churn = baseData.current_churn_rate;
+            const attendance = baseData.class_attendance_rate;
+            const annual = baseData.annual_membership_ratio;
+            const complaints = baseData.avg_complaints;
+            const highRisk = baseData.high_risk_members;
+            const avgValue = baseData.avg_member_value;
+
+            const projectedChurn = Math.max(0, churn - (churn * factor * 0.7));
+            const projectedAttendance = Math.min(100, attendance + ((100 - attendance) * factor * 0.6));
+            const projectedAnnual = Math.min(100, annual + ((100 - annual) * factor * 0.5));
+            const projectedComplaints = Math.max(0, complaints - (complaints * factor * 0.8));
+
+            const savedMembers = Math.round(highRisk * factor);
+            const revenueSaved = savedMembers * avgValue;
+            const maximumPossibleRevenue = highRisk * avgValue;
+            const revenuePercent = maximumPossibleRevenue > 0 ? (revenueSaved / maximumPossibleRevenue) * 100 : 0;
+
+            const churnImprovement = ((churn - projectedChurn) / churn * 100).toFixed(1);
+            const complaintsReduction = ((complaints - projectedComplaints) / complaints * 100).toFixed(0);
+            const avgEngagementIncrease = Math.round(((projectedAttendance - attendance) + (projectedAnnual - annual)) / 2);
+
+            // Update displays
+            document.getElementById("sliderValue").innerText = value + "%";
+            document.getElementById("sliderPercent").innerText = value + "%";
+
+            // Dumbbell Chart (Churn)
+            document.getElementById("currentChurn").innerText = churn.toFixed(1) + "%";
+            document.getElementById("projectedChurn").innerText = projectedChurn.toFixed(1) + "%";
+            document.getElementById("churnImprovement").innerText = "-" + churnImprovement + "%";
+            
+            const maxChurn = 40;
+            const currentPos = Math.min((churn / maxChurn) * 100, 100);
+            const projectedPos = Math.min((projectedChurn / maxChurn) * 100, 100);
+            
+            document.getElementById('currentDot').style.left = currentPos + '%';
+            document.getElementById('projectedDot').style.left = projectedPos + '%';
+            
+            const line = document.getElementById('dumbbellLine');
+            const leftPos = Math.min(currentPos, projectedPos);
+            const width = Math.abs(projectedPos - currentPos);
+            line.style.left = leftPos + '%';
+            line.style.width = width + '%';
+            
+            document.getElementById('currentDotLabel').innerHTML = churn.toFixed(1) + '%';
+            document.getElementById('projectedDotLabel').innerHTML = projectedChurn.toFixed(1) + '%';
+            document.getElementById('churnFooter').innerHTML = (churn - projectedChurn).toFixed(1) + ' percentage point reduction';
+
+            // Revenue Ring - FIXED CALCULATION
+            const circumference = 2 * Math.PI * 40; // 251.2
+            const offset = circumference * (1 - revenuePercent / 100);
+            document.getElementById('revenueRing').style.strokeDashoffset = offset;
+            document.getElementById('revenuePercent').innerText = Math.round(revenuePercent) + '%';
+            document.getElementById('revenueIncrease').innerHTML = '+$' + Math.round(revenueSaved).toLocaleString('en-IN');
+            document.getElementById('revenueFooter').innerHTML = `$${Math.round(maximumPossibleRevenue).toLocaleString('en-IN')} max → $${Math.round(revenueSaved).toLocaleString('en-IN')} retained`;
+
+            // Engagement Bars
+            document.getElementById('currentAttendanceBar').style.width = attendance + '%';
+            document.getElementById('attendanceBar').style.width = projectedAttendance + '%';
+            document.getElementById('currentAnnualBar').style.width = annual + '%';
+            document.getElementById('annualBar').style.width = projectedAnnual + '%';
+            
+            document.getElementById('currentAttendance').innerText = attendance.toFixed(1) + '%';
+            document.getElementById('attendanceVal').innerText = projectedAttendance.toFixed(1) + '%';
+            document.getElementById('currentAnnual').innerText = annual.toFixed(1) + '%';
+            document.getElementById('annualVal').innerText = projectedAnnual.toFixed(1) + '%';
+            document.getElementById('engagementIncrease').innerText = '+' + avgEngagementIncrease + '%';
+
+            // Complaints Trend
+            document.getElementById('complaintsReduction').innerText = '-' + complaintsReduction + '%';
+            
+            const maxComplaints = Math.max(complaints * 1.5, 5);
+            const startY = 80 + ((complaints - 0) / (maxComplaints - 0)) * -60;
+            const endY = 80 + ((projectedComplaints - 0) / (maxComplaints - 0)) * -60;
+            
+            document.getElementById('trendLine').setAttribute('d', `M0,${startY} L300,${endY}`);
+            document.getElementById('trendArea').setAttribute('points', `0,100 0,${startY} 300,${endY} 300,100`);
+            document.getElementById('trendStart').setAttribute('cy', startY);
+            document.getElementById('trendEnd').setAttribute('cy', endY);
+            
+            document.getElementById('currentComplaintLabel').innerHTML = complaints.toFixed(2);
+            document.getElementById('projectedComplaintLabel').innerHTML = projectedComplaints.toFixed(2);
+
+            // KPI Row - UPDATED with compact format
+            document.getElementById('membersSavedBottom').innerText = savedMembers;
+            document.getElementById('revenueSavedBottom').innerText = '$' + Math.round(revenueSaved).toLocaleString('en-IN');
+            
+            // Attendance and Annual in compact format (one line with arrow)
+            document.getElementById('attendanceCurrent').innerText = attendance.toFixed(1) + '%';
+            document.getElementById('attendanceProjected').innerText = projectedAttendance.toFixed(1) + '%';
+            document.getElementById('annualCurrent').innerText = annual.toFixed(1) + '%';
+            document.getElementById('annualProjected').innerText = projectedAnnual.toFixed(1) + '%';
+        }
+
+        document.getElementById("retentionSlider").addEventListener("input", function(){
+            updateSimulation(this.value);
+        });
+
+        // Initial update to set correct ring dasharray
+        window.addEventListener('load', function() {
+            const circumference = 2 * Math.PI * 40;
+            document.getElementById('revenueRing').style.strokeDasharray = circumference;
+        });
+
+        loadBusinessImpact();
+    </script>
+</main>
+</body>
+</html>
